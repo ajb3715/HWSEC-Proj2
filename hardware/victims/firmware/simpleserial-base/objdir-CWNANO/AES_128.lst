@@ -1,0 +1,2511 @@
+   1              		.cpu cortex-m0
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"AES_128.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "AES_128.c"
+  18              		.section	.text.ExpandKey,"ax",%progbits
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.global	ExpandKey
+  22              		.syntax unified
+  23              		.code	16
+  24              		.thumb_func
+  26              	ExpandKey:
+  27              	.LVL0:
+  28              	.LFB3:
+   1:AES_128.c     **** 
+   2:AES_128.c     **** #include "AES_128.h"
+   3:AES_128.c     **** 
+   4:AES_128.c     **** const unsigned char SBox[256] = {
+   5:AES_128.c     ****  0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,   
+   6:AES_128.c     ****  0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,   
+   7:AES_128.c     ****  0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,   
+   8:AES_128.c     ****  0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75,   
+   9:AES_128.c     ****  0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84,   
+  10:AES_128.c     ****  0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf,   
+  11:AES_128.c     ****  0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8,   
+  12:AES_128.c     ****  0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2,   
+  13:AES_128.c     ****  0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73,   
+  14:AES_128.c     ****  0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb,   
+  15:AES_128.c     ****  0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79,   
+  16:AES_128.c     ****  0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08,  
+  17:AES_128.c     ****  0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a,   
+  18:AES_128.c     ****  0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e,   
+  19:AES_128.c     ****  0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,   
+  20:AES_128.c     ****  0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 }; 
+  21:AES_128.c     **** 
+  22:AES_128.c     **** const unsigned char xTime2[256]={
+  23:AES_128.c     **** 0x00,0x02,0x04,0x06,0x08,0x0a,0x0c,0x0e,0x10,0x12,0x14,0x16,0x18,0x1a,0x1c,0x1e,
+  24:AES_128.c     **** 0x20,0x22,0x24,0x26,0x28,0x2a,0x2c,0x2e,0x30,0x32,0x34,0x36,0x38,0x3a,0x3c,0x3e,
+  25:AES_128.c     **** 0x40,0x42,0x44,0x46,0x48,0x4a,0x4c,0x4e,0x50,0x52,0x54,0x56,0x58,0x5a,0x5c,0x5e,
+  26:AES_128.c     **** 0x60,0x62,0x64,0x66,0x68,0x6a,0x6c,0x6e,0x70,0x72,0x74,0x76,0x78,0x7a,0x7c,0x7e,
+  27:AES_128.c     **** 0x80,0x82,0x84,0x86,0x88,0x8a,0x8c,0x8e,0x90,0x92,0x94,0x96,0x98,0x9a,0x9c,0x9e,
+  28:AES_128.c     **** 0xa0,0xa2,0xa4,0xa6,0xa8,0xaa,0xac,0xae,0xb0,0xb2,0xb4,0xb6,0xb8,0xba,0xbc,0xbe,
+  29:AES_128.c     **** 0xc0,0xc2,0xc4,0xc6,0xc8,0xca,0xcc,0xce,0xd0,0xd2,0xd4,0xd6,0xd8,0xda,0xdc,0xde,
+  30:AES_128.c     **** 0xe0,0xe2,0xe4,0xe6,0xe8,0xea,0xec,0xee,0xf0,0xf2,0xf4,0xf6,0xf8,0xfa,0xfc,0xfe,
+  31:AES_128.c     **** 0x1b,0x19,0x1f,0x1d,0x13,0x11,0x17,0x15,0x0b,0x09,0x0f,0x0d,0x03,0x01,0x07,0x05,
+  32:AES_128.c     **** 0x3b,0x39,0x3f,0x3d,0x33,0x31,0x37,0x35,0x2b,0x29,0x2f,0x2d,0x23,0x21,0x27,0x25,
+  33:AES_128.c     **** 0x5b,0x59,0x5f,0x5d,0x53,0x51,0x57,0x55,0x4b,0x49,0x4f,0x4d,0x43,0x41,0x47,0x45,
+  34:AES_128.c     **** 0x7b,0x79,0x7f,0x7d,0x73,0x71,0x77,0x75,0x6b,0x69,0x6f,0x6d,0x63,0x61,0x67,0x65,
+  35:AES_128.c     **** 0x9b,0x99,0x9f,0x9d,0x93,0x91,0x97,0x95,0x8b,0x89,0x8f,0x8d,0x83,0x81,0x87,0x85,
+  36:AES_128.c     **** 0xbb,0xb9,0xbf,0xbd,0xb3,0xb1,0xb7,0xb5,0xab,0xa9,0xaf,0xad,0xa3,0xa1,0xa7,0xa5,
+  37:AES_128.c     **** 0xdb,0xd9,0xdf,0xdd,0xd3,0xd1,0xd7,0xd5,0xcb,0xc9,0xcf,0xcd,0xc3,0xc1,0xc7,0xc5,
+  38:AES_128.c     **** 0xfb,0xf9,0xff,0xfd,0xf3,0xf1,0xf7,0xf5,0xeb,0xe9,0xef,0xed,0xe3,0xe1,0xe7,0xe5};
+  39:AES_128.c     **** 
+  40:AES_128.c     **** 
+  41:AES_128.c     **** //Multiplication LUT for 0x03 or {03}
+  42:AES_128.c     **** const unsigned char xTime3[256]={
+  43:AES_128.c     **** 0x00,0x03,0x06,0x05,0x0c,0x0f,0x0a,0x09,0x18,0x1b,0x1e,0x1d,0x14,0x17,0x12,0x11,
+  44:AES_128.c     **** 0x30,0x33,0x36,0x35,0x3c,0x3f,0x3a,0x39,0x28,0x2b,0x2e,0x2d,0x24,0x27,0x22,0x21,
+  45:AES_128.c     **** 0x60,0x63,0x66,0x65,0x6c,0x6f,0x6a,0x69,0x78,0x7b,0x7e,0x7d,0x74,0x77,0x72,0x71,
+  46:AES_128.c     **** 0x50,0x53,0x56,0x55,0x5c,0x5f,0x5a,0x59,0x48,0x4b,0x4e,0x4d,0x44,0x47,0x42,0x41,
+  47:AES_128.c     **** 0xc0,0xc3,0xc6,0xc5,0xcc,0xcf,0xca,0xc9,0xd8,0xdb,0xde,0xdd,0xd4,0xd7,0xd2,0xd1,
+  48:AES_128.c     **** 0xf0,0xf3,0xf6,0xf5,0xfc,0xff,0xfa,0xf9,0xe8,0xeb,0xee,0xed,0xe4,0xe7,0xe2,0xe1,
+  49:AES_128.c     **** 0xa0,0xa3,0xa6,0xa5,0xac,0xaf,0xaa,0xa9,0xb8,0xbb,0xbe,0xbd,0xb4,0xb7,0xb2,0xb1,
+  50:AES_128.c     **** 0x90,0x93,0x96,0x95,0x9c,0x9f,0x9a,0x99,0x88,0x8b,0x8e,0x8d,0x84,0x87,0x82,0x81,
+  51:AES_128.c     **** 0x9b,0x98,0x9d,0x9e,0x97,0x94,0x91,0x92,0x83,0x80,0x85,0x86,0x8f,0x8c,0x89,0x8a,
+  52:AES_128.c     **** 0xab,0xa8,0xad,0xae,0xa7,0xa4,0xa1,0xa2,0xb3,0xb0,0xb5,0xb6,0xbf,0xbc,0xb9,0xba,
+  53:AES_128.c     **** 0xfb,0xf8,0xfd,0xfe,0xf7,0xf4,0xf1,0xf2,0xe3,0xe0,0xe5,0xe6,0xef,0xec,0xe9,0xea,
+  54:AES_128.c     **** 0xcb,0xc8,0xcd,0xce,0xc7,0xc4,0xc1,0xc2,0xd3,0xd0,0xd5,0xd6,0xdf,0xdc,0xd9,0xda,
+  55:AES_128.c     **** 0x5b,0x58,0x5d,0x5e,0x57,0x54,0x51,0x52,0x43,0x40,0x45,0x46,0x4f,0x4c,0x49,0x4a,
+  56:AES_128.c     **** 0x6b,0x68,0x6d,0x6e,0x67,0x64,0x61,0x62,0x73,0x70,0x75,0x76,0x7f,0x7c,0x79,0x7a,
+  57:AES_128.c     **** 0x3b,0x38,0x3d,0x3e,0x37,0x34,0x31,0x32,0x23,0x20,0x25,0x26,0x2f,0x2c,0x29,0x2a,
+  58:AES_128.c     **** 0x0b,0x08,0x0d,0x0e,0x07,0x04,0x01,0x02,0x13,0x10,0x15,0x16,0x1f,0x1c,0x19,0x1a};
+  59:AES_128.c     **** 
+  60:AES_128.c     **** const unsigned char RCon[10] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
+  61:AES_128.c     **** 
+  62:AES_128.c     **** #define xTime(x) ((x<<1) ^ ((x & 0x080) ? 0x1b : 0x00))
+  63:AES_128.c     **** 
+  64:AES_128.c     **** 
+  65:AES_128.c     **** /**********************************************************************
+  66:AES_128.c     ****  * Functions for key expansion
+  67:AES_128.c     ****  *********************************************************************/
+  68:AES_128.c     **** void ExpandKey (unsigned char Key[][4], unsigned char Expanded_key[][4][4])
+  69:AES_128.c     **** {
+  29              		.loc 1 69 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 40
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  70:AES_128.c     **** 	unsigned char TempKey[4][4];
+  33              		.loc 1 70 2 view .LVU1
+  71:AES_128.c     **** 	bzero(TempKey, 4*4*sizeof (unsigned char));
+  34              		.loc 1 71 2 view .LVU2
+  72:AES_128.c     **** 	unsigned char Tmp_key_column[4];
+  35              		.loc 1 72 2 view .LVU3
+  73:AES_128.c     **** 	bzero(Tmp_key_column, 4*sizeof (unsigned char));
+  36              		.loc 1 73 2 view .LVU4
+  74:AES_128.c     **** 	int i,j;
+  37              		.loc 1 74 2 view .LVU5
+  75:AES_128.c     **** 
+  76:AES_128.c     **** 	// Encryption Key copied to Expanded Key [0]
+  77:AES_128.c     **** 	memcpy(Expanded_key[0], Key, 4 * 4 * sizeof(unsigned char));
+  38              		.loc 1 77 2 view .LVU6
+  69:AES_128.c     **** 	unsigned char TempKey[4][4];
+  39              		.loc 1 69 1 is_stmt 0 view .LVU7
+  40 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  41              	.LCFI0:
+  42              		.cfi_def_cfa_offset 20
+  43              		.cfi_offset 4, -20
+  44              		.cfi_offset 5, -16
+  45              		.cfi_offset 6, -12
+  46              		.cfi_offset 7, -8
+  47              		.cfi_offset 14, -4
+  48 0002 DE46     		mov	lr, fp
+  49 0004 5746     		mov	r7, r10
+  50 0006 4E46     		mov	r6, r9
+  51 0008 4546     		mov	r5, r8
+  52 000a 0C00     		movs	r4, r1
+  53 000c E0B5     		push	{r5, r6, r7, lr}
+  54              	.LCFI1:
+  55              		.cfi_def_cfa_offset 36
+  56              		.cfi_offset 8, -36
+  57              		.cfi_offset 9, -32
+  58              		.cfi_offset 10, -28
+  59              		.cfi_offset 11, -24
+  60              		.loc 1 77 2 view .LVU8
+  61 000e 0100     		movs	r1, r0
+  62              	.LVL1:
+  69:AES_128.c     **** 	unsigned char TempKey[4][4];
+  63              		.loc 1 69 1 view .LVU9
+  64 0010 8BB0     		sub	sp, sp, #44
+  65              	.LCFI2:
+  66              		.cfi_def_cfa_offset 80
+  67              		.loc 1 77 2 view .LVU10
+  68 0012 1022     		movs	r2, #16
+  69 0014 2000     		movs	r0, r4
+  70              	.LVL2:
+  71              		.loc 1 77 2 view .LVU11
+  72 0016 FFF7FEFF 		bl	memcpy
+  73              	.LVL3:
+  78:AES_128.c     **** 
+  79:AES_128.c     **** 	for (i=1; i<11; i++){
+  74              		.loc 1 79 2 is_stmt 1 view .LVU12
+  75              		.loc 1 79 13 discriminator 1 view .LVU13
+  76 001a A37B     		ldrb	r3, [r4, #14]
+  77 001c 444A     		ldr	r2, .L5
+  78 001e 9A46     		mov	r10, r3
+  79 0020 A37A     		ldrb	r3, [r4, #10]
+  80 0022 2100     		movs	r1, r4
+  81 0024 9946     		mov	r9, r3
+  82 0026 A379     		ldrb	r3, [r4, #6]
+  83 0028 E778     		ldrb	r7, [r4, #3]
+  84 002a 9846     		mov	r8, r3
+  85 002c A378     		ldrb	r3, [r4, #2]
+  86 002e E67B     		ldrb	r6, [r4, #15]
+  87 0030 9C46     		mov	ip, r3
+  88 0032 637B     		ldrb	r3, [r4, #13]
+  89 0034 E57A     		ldrb	r5, [r4, #11]
+  90 0036 0693     		str	r3, [sp, #24]
+  91 0038 637A     		ldrb	r3, [r4, #9]
+  92 003a E079     		ldrb	r0, [r4, #7]
+  93 003c 0593     		str	r3, [sp, #20]
+  94 003e 6379     		ldrb	r3, [r4, #5]
+  95 0040 1031     		adds	r1, r1, #16
+  96 0042 0493     		str	r3, [sp, #16]
+  97 0044 6378     		ldrb	r3, [r4, #1]
+  98 0046 0793     		str	r3, [sp, #28]
+  99 0048 237B     		ldrb	r3, [r4, #12]
+ 100 004a 0393     		str	r3, [sp, #12]
+ 101 004c 237A     		ldrb	r3, [r4, #8]
+ 102 004e 0293     		str	r3, [sp, #8]
+ 103 0050 2379     		ldrb	r3, [r4, #4]
+ 104 0052 0193     		str	r3, [sp, #4]
+ 105 0054 2378     		ldrb	r3, [r4]
+ 106 0056 6446     		mov	r4, ip
+ 107              	.LVL4:
+ 108              		.loc 1 79 13 is_stmt 0 discriminator 1 view .LVU14
+ 109 0058 9B46     		mov	fp, r3
+ 110 005a 364B     		ldr	r3, .L5+4
+ 111 005c 9446     		mov	ip, r2
+ 112 005e 0893     		str	r3, [sp, #32]
+ 113 0060 4B46     		mov	r3, r9
+ 114 0062 0993     		str	r3, [sp, #36]
+ 115              	.LVL5:
+ 116              	.L2:
+  80:AES_128.c     **** 		// W3 copied to TempKeyRow with rotation
+  81:AES_128.c     **** 		Tmp_key_column[0]=Expanded_key[i-1][1][3];
+ 117              		.loc 1 81 3 is_stmt 1 view .LVU15
+  82:AES_128.c     **** 		Tmp_key_column[1]=Expanded_key[i-1][2][3];
+ 118              		.loc 1 82 3 view .LVU16
+  83:AES_128.c     **** 		Tmp_key_column[2]=Expanded_key[i-1][3][3];
+ 119              		.loc 1 83 3 view .LVU17
+  84:AES_128.c     **** 		Tmp_key_column[3]=Expanded_key[i-1][0][3];
+ 120              		.loc 1 84 3 view .LVU18
+  85:AES_128.c     **** 
+  86:AES_128.c     **** 		// sBox applied
+  87:AES_128.c     **** 		Tmp_key_column[0]=SBox[ Tmp_key_column[0] ];
+ 121              		.loc 1 87 3 view .LVU19
+  88:AES_128.c     **** 		Tmp_key_column[1]=SBox[ Tmp_key_column[1] ];
+ 122              		.loc 1 88 3 view .LVU20
+  89:AES_128.c     **** 		Tmp_key_column[2]=SBox[ Tmp_key_column[2] ];
+ 123              		.loc 1 89 3 view .LVU21
+  90:AES_128.c     **** 		Tmp_key_column[3]=SBox[ Tmp_key_column[3] ];
+ 124              		.loc 1 90 3 view .LVU22
+  91:AES_128.c     **** 
+  92:AES_128.c     **** 		// Rcon applied
+  93:AES_128.c     **** 		Tmp_key_column[0]^=RCon[i-1];
+ 125              		.loc 1 93 3 view .LVU23
+  94:AES_128.c     **** 
+  95:AES_128.c     **** 		// XOR
+  96:AES_128.c     **** 		for(j=0; j<4; j++){
+ 126              		.loc 1 96 3 view .LVU24
+ 127              		.loc 1 96 13 discriminator 1 view .LVU25
+  97:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 128              		.loc 1 97 4 view .LVU26
+ 129              		.loc 1 97 22 is_stmt 0 view .LVU27
+ 130 0064 6346     		mov	r3, ip
+ 131 0066 089A     		ldr	r2, [sp, #32]
+ 132 0068 1B5C     		ldrb	r3, [r3, r0]
+ 133 006a 1278     		ldrb	r2, [r2]
+ 134 006c 5340     		eors	r3, r2
+ 135 006e 9946     		mov	r9, r3
+ 136 0070 5B46     		mov	r3, fp
+ 137 0072 4A46     		mov	r2, r9
+ 138 0074 5340     		eors	r3, r2
+ 139 0076 9B46     		mov	fp, r3
+  98:AES_128.c     **** 			Tmp_key_column[1] = Tmp_key_column[1]^Expanded_key[i-1][1][j];
+ 140              		.loc 1 98 4 is_stmt 1 view .LVU28
+  99:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 141              		.loc 1 99 4 view .LVU29
+ 100:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 142              		.loc 1 100 4 view .LVU30
+ 101:AES_128.c     **** 
+ 102:AES_128.c     **** 			Expanded_key[i][0][j] = Tmp_key_column[0];
+ 143              		.loc 1 102 4 view .LVU31
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 144              		.loc 1 98 22 is_stmt 0 view .LVU32
+ 145 0078 6346     		mov	r3, ip
+ 146 007a 5B5D     		ldrb	r3, [r3, r5]
+ 147 007c 9946     		mov	r9, r3
+ 148 007e 4A46     		mov	r2, r9
+ 149 0080 019B     		ldr	r3, [sp, #4]
+ 150 0082 5340     		eors	r3, r2
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 151              		.loc 1 99 22 view .LVU33
+ 152 0084 6246     		mov	r2, ip
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 153              		.loc 1 98 22 view .LVU34
+ 154 0086 0193     		str	r3, [sp, #4]
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 155              		.loc 1 99 22 view .LVU35
+ 156 0088 925D     		ldrb	r2, [r2, r6]
+ 157 008a 029B     		ldr	r3, [sp, #8]
+ 158 008c 5340     		eors	r3, r2
+ 100:AES_128.c     **** 
+ 159              		.loc 1 100 22 view .LVU36
+ 160 008e 6246     		mov	r2, ip
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 161              		.loc 1 99 22 view .LVU37
+ 162 0090 0293     		str	r3, [sp, #8]
+ 100:AES_128.c     **** 
+ 163              		.loc 1 100 22 view .LVU38
+ 164 0092 D25D     		ldrb	r2, [r2, r7]
+ 165 0094 039B     		ldr	r3, [sp, #12]
+ 166 0096 5340     		eors	r3, r2
+ 167              		.loc 1 102 26 view .LVU39
+ 168 0098 5A46     		mov	r2, fp
+ 100:AES_128.c     **** 
+ 169              		.loc 1 100 22 view .LVU40
+ 170 009a 0393     		str	r3, [sp, #12]
+ 103:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 171              		.loc 1 103 26 view .LVU41
+ 172 009c 019B     		ldr	r3, [sp, #4]
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 173              		.loc 1 102 26 view .LVU42
+ 174 009e 0A70     		strb	r2, [r1]
+ 175              		.loc 1 103 4 is_stmt 1 view .LVU43
+ 176              		.loc 1 103 26 is_stmt 0 view .LVU44
+ 177 00a0 0B71     		strb	r3, [r1, #4]
+ 104:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 178              		.loc 1 104 4 is_stmt 1 view .LVU45
+ 179              		.loc 1 104 26 is_stmt 0 view .LVU46
+ 180 00a2 029B     		ldr	r3, [sp, #8]
+ 181 00a4 0B72     		strb	r3, [r1, #8]
+ 105:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 182              		.loc 1 105 4 is_stmt 1 view .LVU47
+ 183              		.loc 1 105 26 is_stmt 0 view .LVU48
+ 184 00a6 039B     		ldr	r3, [sp, #12]
+ 185 00a8 0B73     		strb	r3, [r1, #12]
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 186              		.loc 1 96 18 is_stmt 1 discriminator 3 view .LVU49
+ 187              	.LVL6:
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 188              		.loc 1 96 13 discriminator 1 view .LVU50
+  97:AES_128.c     **** 			Tmp_key_column[1] = Tmp_key_column[1]^Expanded_key[i-1][1][j];
+ 189              		.loc 1 97 4 view .LVU51
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 190              		.loc 1 98 4 view .LVU52
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 191              		.loc 1 99 4 view .LVU53
+ 100:AES_128.c     **** 
+ 192              		.loc 1 100 4 view .LVU54
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 193              		.loc 1 102 4 view .LVU55
+  97:AES_128.c     **** 			Tmp_key_column[1] = Tmp_key_column[1]^Expanded_key[i-1][1][j];
+ 194              		.loc 1 97 22 is_stmt 0 view .LVU56
+ 195 00aa 079B     		ldr	r3, [sp, #28]
+ 196 00ac 5340     		eors	r3, r2
+ 197 00ae 0793     		str	r3, [sp, #28]
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 198              		.loc 1 98 22 view .LVU57
+ 199 00b0 049A     		ldr	r2, [sp, #16]
+ 200 00b2 019B     		ldr	r3, [sp, #4]
+ 201 00b4 5A40     		eors	r2, r3
+ 202 00b6 0492     		str	r2, [sp, #16]
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 203              		.loc 1 99 22 view .LVU58
+ 204 00b8 029B     		ldr	r3, [sp, #8]
+ 205 00ba 059A     		ldr	r2, [sp, #20]
+ 206 00bc 5A40     		eors	r2, r3
+ 207 00be 0592     		str	r2, [sp, #20]
+ 100:AES_128.c     **** 
+ 208              		.loc 1 100 22 view .LVU59
+ 209 00c0 039B     		ldr	r3, [sp, #12]
+ 210 00c2 069A     		ldr	r2, [sp, #24]
+ 211 00c4 5A40     		eors	r2, r3
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 212              		.loc 1 102 26 view .LVU60
+ 213 00c6 079B     		ldr	r3, [sp, #28]
+ 100:AES_128.c     **** 
+ 214              		.loc 1 100 22 view .LVU61
+ 215 00c8 0692     		str	r2, [sp, #24]
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 216              		.loc 1 102 26 view .LVU62
+ 217 00ca 4B70     		strb	r3, [r1, #1]
+ 103:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 218              		.loc 1 103 4 is_stmt 1 view .LVU63
+  97:AES_128.c     **** 			Tmp_key_column[1] = Tmp_key_column[1]^Expanded_key[i-1][1][j];
+ 219              		.loc 1 97 22 is_stmt 0 view .LVU64
+ 220 00cc 5C40     		eors	r4, r3
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 221              		.loc 1 98 22 view .LVU65
+ 222 00ce 4346     		mov	r3, r8
+ 103:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 223              		.loc 1 103 26 view .LVU66
+ 224 00d0 049A     		ldr	r2, [sp, #16]
+  97:AES_128.c     **** 			Tmp_key_column[1] = Tmp_key_column[1]^Expanded_key[i-1][1][j];
+ 225              		.loc 1 97 22 view .LVU67
+ 226 00d2 6740     		eors	r7, r4
+ 103:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 227              		.loc 1 103 26 view .LVU68
+ 228 00d4 4A71     		strb	r2, [r1, #5]
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 229              		.loc 1 104 4 is_stmt 1 view .LVU69
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 230              		.loc 1 104 26 is_stmt 0 view .LVU70
+ 231 00d6 059A     		ldr	r2, [sp, #20]
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 232              		.loc 1 102 26 view .LVU71
+ 233 00d8 8C70     		strb	r4, [r1, #2]
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 234              		.loc 1 104 26 view .LVU72
+ 235 00da 4A72     		strb	r2, [r1, #9]
+ 236              		.loc 1 105 4 is_stmt 1 view .LVU73
+ 237              		.loc 1 105 26 is_stmt 0 view .LVU74
+ 238 00dc 069A     		ldr	r2, [sp, #24]
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 239              		.loc 1 102 26 view .LVU75
+ 240 00de CF70     		strb	r7, [r1, #3]
+ 241              		.loc 1 105 26 view .LVU76
+ 242 00e0 4A73     		strb	r2, [r1, #13]
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 243              		.loc 1 96 18 is_stmt 1 discriminator 3 view .LVU77
+ 244              	.LVL7:
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 245              		.loc 1 96 13 discriminator 1 view .LVU78
+  97:AES_128.c     **** 			Tmp_key_column[1] = Tmp_key_column[1]^Expanded_key[i-1][1][j];
+ 246              		.loc 1 97 4 view .LVU79
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 247              		.loc 1 98 4 view .LVU80
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 248              		.loc 1 98 22 is_stmt 0 view .LVU81
+ 249 00e2 049A     		ldr	r2, [sp, #16]
+ 250 00e4 5340     		eors	r3, r2
+ 251 00e6 9846     		mov	r8, r3
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 252              		.loc 1 99 4 is_stmt 1 view .LVU82
+ 100:AES_128.c     **** 
+ 253              		.loc 1 100 4 view .LVU83
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 254              		.loc 1 99 22 is_stmt 0 view .LVU84
+ 255 00e8 059A     		ldr	r2, [sp, #20]
+ 256 00ea 099B     		ldr	r3, [sp, #36]
+ 257 00ec 5340     		eors	r3, r2
+ 258 00ee 0993     		str	r3, [sp, #36]
+ 100:AES_128.c     **** 
+ 259              		.loc 1 100 22 view .LVU85
+ 260 00f0 5346     		mov	r3, r10
+ 261 00f2 069A     		ldr	r2, [sp, #24]
+ 262 00f4 5340     		eors	r3, r2
+ 263 00f6 9A46     		mov	r10, r3
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 264              		.loc 1 102 4 is_stmt 1 view .LVU86
+ 103:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 265              		.loc 1 103 4 view .LVU87
+ 103:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 266              		.loc 1 103 26 is_stmt 0 view .LVU88
+ 267 00f8 4346     		mov	r3, r8
+ 268 00fa 8B71     		strb	r3, [r1, #6]
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 269              		.loc 1 104 4 is_stmt 1 view .LVU89
+ 270              		.loc 1 105 26 is_stmt 0 view .LVU90
+ 271 00fc 5346     		mov	r3, r10
+ 272 00fe 8B73     		strb	r3, [r1, #14]
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 273              		.loc 1 98 22 view .LVU91
+ 274 0100 4346     		mov	r3, r8
+ 275 0102 5840     		eors	r0, r3
+ 100:AES_128.c     **** 
+ 276              		.loc 1 100 22 view .LVU92
+ 277 0104 5346     		mov	r3, r10
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 278              		.loc 1 104 26 view .LVU93
+ 279 0106 099A     		ldr	r2, [sp, #36]
+ 100:AES_128.c     **** 
+ 280              		.loc 1 100 22 view .LVU94
+ 281 0108 5E40     		eors	r6, r3
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 282              		.loc 1 104 26 view .LVU95
+ 283 010a 8A72     		strb	r2, [r1, #10]
+ 284              		.loc 1 105 4 is_stmt 1 view .LVU96
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 285              		.loc 1 96 18 discriminator 3 view .LVU97
+ 286              	.LVL8:
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 287              		.loc 1 96 13 discriminator 1 view .LVU98
+  97:AES_128.c     **** 			Tmp_key_column[1] = Tmp_key_column[1]^Expanded_key[i-1][1][j];
+ 288              		.loc 1 97 4 view .LVU99
+  98:AES_128.c     **** 			Tmp_key_column[2] = Tmp_key_column[2]^Expanded_key[i-1][2][j];
+ 289              		.loc 1 98 4 view .LVU100
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 290              		.loc 1 99 4 view .LVU101
+  99:AES_128.c     **** 			Tmp_key_column[3] = Tmp_key_column[3]^Expanded_key[i-1][3][j];
+ 291              		.loc 1 99 22 is_stmt 0 view .LVU102
+ 292 010c 5540     		eors	r5, r2
+ 100:AES_128.c     **** 
+ 293              		.loc 1 100 4 is_stmt 1 view .LVU103
+ 102:AES_128.c     **** 			Expanded_key[i][1][j] = Tmp_key_column[1];
+ 294              		.loc 1 102 4 view .LVU104
+ 103:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 295              		.loc 1 103 4 view .LVU105
+  79:AES_128.c     **** 		// W3 copied to TempKeyRow with rotation
+ 296              		.loc 1 79 13 is_stmt 0 discriminator 1 view .LVU106
+ 297 010e 089A     		ldr	r2, [sp, #32]
+ 298 0110 094B     		ldr	r3, .L5+8
+ 299 0112 0132     		adds	r2, r2, #1
+ 103:AES_128.c     **** 			Expanded_key[i][2][j] = Tmp_key_column[2];
+ 300              		.loc 1 103 26 view .LVU107
+ 301 0114 C871     		strb	r0, [r1, #7]
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 302              		.loc 1 104 4 is_stmt 1 view .LVU108
+ 104:AES_128.c     **** 			Expanded_key[i][3][j] = Tmp_key_column[3];
+ 303              		.loc 1 104 26 is_stmt 0 view .LVU109
+ 304 0116 CD72     		strb	r5, [r1, #11]
+ 305              		.loc 1 105 4 is_stmt 1 view .LVU110
+ 306              		.loc 1 105 26 is_stmt 0 view .LVU111
+ 307 0118 CE73     		strb	r6, [r1, #15]
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 308              		.loc 1 96 18 is_stmt 1 discriminator 3 view .LVU112
+ 309              	.LVL9:
+  96:AES_128.c     **** 			Tmp_key_column[0] = Tmp_key_column[0]^Expanded_key[i-1][0][j];
+ 310              		.loc 1 96 13 discriminator 1 view .LVU113
+  79:AES_128.c     **** 		// W3 copied to TempKeyRow with rotation
+ 311              		.loc 1 79 19 discriminator 2 view .LVU114
+  79:AES_128.c     **** 		// W3 copied to TempKeyRow with rotation
+ 312              		.loc 1 79 13 discriminator 1 view .LVU115
+ 313 011a 0892     		str	r2, [sp, #32]
+ 314              	.LVL10:
+  79:AES_128.c     **** 		// W3 copied to TempKeyRow with rotation
+ 315              		.loc 1 79 13 is_stmt 0 discriminator 1 view .LVU116
+ 316 011c 1031     		adds	r1, r1, #16
+ 317 011e 9A42     		cmp	r2, r3
+ 318 0120 A0D1     		bne	.L2
+ 106:AES_128.c     **** 		}
+ 107:AES_128.c     **** 	}
+ 108:AES_128.c     **** }
+ 319              		.loc 1 108 1 view .LVU117
+ 320 0122 0BB0     		add	sp, sp, #44
+ 321              		@ sp needed
+ 322 0124 F0BC     		pop	{r4, r5, r6, r7}
+ 323 0126 BB46     		mov	fp, r7
+ 324 0128 B246     		mov	r10, r6
+ 325 012a A946     		mov	r9, r5
+ 326 012c A046     		mov	r8, r4
+ 327 012e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 328              	.L6:
+ 329              		.align	2
+ 330              	.L5:
+ 331 0130 00000000 		.word	SBox
+ 332 0134 00000000 		.word	.LANCHOR0
+ 333 0138 0A000000 		.word	.LANCHOR0+10
+ 334              		.cfi_endproc
+ 335              	.LFE3:
+ 337              		.section	.text.AddRoundKey,"ax",%progbits
+ 338              		.align	1
+ 339              		.p2align 2,,3
+ 340              		.global	AddRoundKey
+ 341              		.syntax unified
+ 342              		.code	16
+ 343              		.thumb_func
+ 345              	AddRoundKey:
+ 346              	.LVL11:
+ 347              	.LFB4:
+ 109:AES_128.c     **** 
+ 110:AES_128.c     **** void AddRoundKey (unsigned char Key[][4], unsigned char StateArray[][4])
+ 111:AES_128.c     **** {
+ 348              		.loc 1 111 1 is_stmt 1 view -0
+ 349              		.cfi_startproc
+ 350              		@ args = 0, pretend = 0, frame = 0
+ 351              		@ frame_needed = 0, uses_anonymous_args = 0
+ 352              		@ link register save eliminated.
+ 112:AES_128.c     **** 	int i,j;
+ 353              		.loc 1 112 2 view .LVU119
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 354              		.loc 1 113 2 view .LVU120
+ 355              		.loc 1 113 12 discriminator 1 view .LVU121
+ 356 0000 CB1C     		adds	r3, r1, #3
+ 357 0002 1B1A     		subs	r3, r3, r0
+ 358 0004 062B     		cmp	r3, #6
+ 359 0006 14D9     		bls	.L8
+ 360 0008 0300     		movs	r3, r0
+ 361 000a 0B43     		orrs	r3, r1
+ 362 000c 9B07     		lsls	r3, r3, #30
+ 363 000e 10D1     		bne	.L8
+ 364              	.LVL12:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 365              		.loc 1 114 13 discriminator 1 view .LVU122
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 366              		.loc 1 115 4 view .LVU123
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 367              		.loc 1 114 18 discriminator 3 view .LVU124
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 368              		.loc 1 114 13 discriminator 1 view .LVU125
+ 369              		.loc 1 115 4 view .LVU126
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 370              		.loc 1 114 18 discriminator 3 view .LVU127
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 371              		.loc 1 114 13 discriminator 1 view .LVU128
+ 372              		.loc 1 115 4 view .LVU129
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 373              		.loc 1 114 18 discriminator 3 view .LVU130
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 374              		.loc 1 114 13 discriminator 1 view .LVU131
+ 375              		.loc 1 115 4 view .LVU132
+ 376              		.loc 1 115 21 is_stmt 0 view .LVU133
+ 377 0010 0268     		ldr	r2, [r0]
+ 378 0012 0B68     		ldr	r3, [r1]
+ 379 0014 5340     		eors	r3, r2
+ 380 0016 0B60     		str	r3, [r1]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 381              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU134
+ 382              	.LVL13:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 383              		.loc 1 114 13 discriminator 1 view .LVU135
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 384              		.loc 1 113 17 discriminator 2 view .LVU136
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 385              		.loc 1 113 12 discriminator 1 view .LVU137
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 386              		.loc 1 114 13 discriminator 1 view .LVU138
+ 387              		.loc 1 115 4 view .LVU139
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 388              		.loc 1 114 18 discriminator 3 view .LVU140
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 389              		.loc 1 114 13 discriminator 1 view .LVU141
+ 390              		.loc 1 115 4 view .LVU142
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 391              		.loc 1 114 18 discriminator 3 view .LVU143
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 392              		.loc 1 114 13 discriminator 1 view .LVU144
+ 393              		.loc 1 115 4 view .LVU145
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 394              		.loc 1 114 18 discriminator 3 view .LVU146
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 395              		.loc 1 114 13 discriminator 1 view .LVU147
+ 396              		.loc 1 115 4 view .LVU148
+ 397              		.loc 1 115 21 is_stmt 0 view .LVU149
+ 398 0018 4268     		ldr	r2, [r0, #4]
+ 399 001a 4B68     		ldr	r3, [r1, #4]
+ 400 001c 5340     		eors	r3, r2
+ 401 001e 4B60     		str	r3, [r1, #4]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 402              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU150
+ 403              	.LVL14:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 404              		.loc 1 114 13 discriminator 1 view .LVU151
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 405              		.loc 1 113 17 discriminator 2 view .LVU152
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 406              		.loc 1 113 12 discriminator 1 view .LVU153
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 407              		.loc 1 114 13 discriminator 1 view .LVU154
+ 408              		.loc 1 115 4 view .LVU155
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 409              		.loc 1 114 18 discriminator 3 view .LVU156
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 410              		.loc 1 114 13 discriminator 1 view .LVU157
+ 411              		.loc 1 115 4 view .LVU158
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 412              		.loc 1 114 18 discriminator 3 view .LVU159
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 413              		.loc 1 114 13 discriminator 1 view .LVU160
+ 414              		.loc 1 115 4 view .LVU161
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 415              		.loc 1 114 18 discriminator 3 view .LVU162
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 416              		.loc 1 114 13 discriminator 1 view .LVU163
+ 417              		.loc 1 115 4 view .LVU164
+ 418              		.loc 1 115 21 is_stmt 0 view .LVU165
+ 419 0020 8268     		ldr	r2, [r0, #8]
+ 420 0022 8B68     		ldr	r3, [r1, #8]
+ 421 0024 5340     		eors	r3, r2
+ 422 0026 8B60     		str	r3, [r1, #8]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 423              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU166
+ 424              	.LVL15:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 425              		.loc 1 114 13 discriminator 1 view .LVU167
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 426              		.loc 1 113 17 discriminator 2 view .LVU168
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 427              		.loc 1 113 12 discriminator 1 view .LVU169
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 428              		.loc 1 114 13 discriminator 1 view .LVU170
+ 429              		.loc 1 115 4 view .LVU171
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 430              		.loc 1 114 18 discriminator 3 view .LVU172
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 431              		.loc 1 114 13 discriminator 1 view .LVU173
+ 432              		.loc 1 115 4 view .LVU174
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 433              		.loc 1 114 18 discriminator 3 view .LVU175
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 434              		.loc 1 114 13 discriminator 1 view .LVU176
+ 435              		.loc 1 115 4 view .LVU177
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 436              		.loc 1 114 18 discriminator 3 view .LVU178
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 437              		.loc 1 114 13 discriminator 1 view .LVU179
+ 438              		.loc 1 115 4 view .LVU180
+ 439              		.loc 1 115 21 is_stmt 0 view .LVU181
+ 440 0028 C268     		ldr	r2, [r0, #12]
+ 441 002a CB68     		ldr	r3, [r1, #12]
+ 442 002c 5340     		eors	r3, r2
+ 443 002e CB60     		str	r3, [r1, #12]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 444              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU182
+ 445              	.LVL16:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 446              		.loc 1 114 13 discriminator 1 view .LVU183
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 447              		.loc 1 113 17 discriminator 2 view .LVU184
+ 113:AES_128.c     **** 	for(i=0; i<4; i++)
+ 448              		.loc 1 113 12 discriminator 1 view .LVU185
+ 449              	.L7:
+ 116:AES_128.c     **** }
+ 450              		.loc 1 116 1 is_stmt 0 view .LVU186
+ 451              		@ sp needed
+ 452 0030 7047     		bx	lr
+ 453              	.LVL17:
+ 454              	.L8:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 455              		.loc 1 114 13 is_stmt 1 discriminator 1 view .LVU187
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 456              		.loc 1 115 4 view .LVU188
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 457              		.loc 1 115 21 is_stmt 0 view .LVU189
+ 458 0032 0278     		ldrb	r2, [r0]
+ 459 0034 0B78     		ldrb	r3, [r1]
+ 460 0036 5340     		eors	r3, r2
+ 461 0038 0B70     		strb	r3, [r1]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 462              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU190
+ 463              	.LVL18:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 464              		.loc 1 114 13 discriminator 1 view .LVU191
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 465              		.loc 1 115 4 view .LVU192
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 466              		.loc 1 115 21 is_stmt 0 view .LVU193
+ 467 003a 4278     		ldrb	r2, [r0, #1]
+ 468 003c 4B78     		ldrb	r3, [r1, #1]
+ 469 003e 5340     		eors	r3, r2
+ 470 0040 4B70     		strb	r3, [r1, #1]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 471              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU194
+ 472              	.LVL19:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 473              		.loc 1 114 13 discriminator 1 view .LVU195
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 474              		.loc 1 115 4 view .LVU196
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 475              		.loc 1 115 21 is_stmt 0 view .LVU197
+ 476 0042 8278     		ldrb	r2, [r0, #2]
+ 477 0044 8B78     		ldrb	r3, [r1, #2]
+ 478 0046 5340     		eors	r3, r2
+ 479 0048 8B70     		strb	r3, [r1, #2]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 480              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU198
+ 481              	.LVL20:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 482              		.loc 1 114 13 discriminator 1 view .LVU199
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 483              		.loc 1 115 4 view .LVU200
+ 115:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 484              		.loc 1 115 21 is_stmt 0 view .LVU201
+ 485 004a C278     		ldrb	r2, [r0, #3]
+ 486 004c CB78     		ldrb	r3, [r1, #3]
+ 487 004e 5340     		eors	r3, r2
+ 488 0050 CB70     		strb	r3, [r1, #3]
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 489              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU202
+ 490              	.LVL21:
+ 114:AES_128.c     **** 		for(j=0; j<4; j++)
+ 491              		.loc 1 114 13 discriminator 1 view .LVU203
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 492              		.loc 1 113 17 discriminator 2 view .LVU204
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 493              		.loc 1 113 12 discriminator 1 view .LVU205
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 494              		.loc 1 114 13 discriminator 1 view .LVU206
+ 115:AES_128.c     **** }
+ 495              		.loc 1 115 4 view .LVU207
+ 115:AES_128.c     **** }
+ 496              		.loc 1 115 21 is_stmt 0 view .LVU208
+ 497 0052 0279     		ldrb	r2, [r0, #4]
+ 498 0054 0B79     		ldrb	r3, [r1, #4]
+ 499 0056 5340     		eors	r3, r2
+ 500 0058 0B71     		strb	r3, [r1, #4]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 501              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU209
+ 502              	.LVL22:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 503              		.loc 1 114 13 discriminator 1 view .LVU210
+ 115:AES_128.c     **** }
+ 504              		.loc 1 115 4 view .LVU211
+ 115:AES_128.c     **** }
+ 505              		.loc 1 115 21 is_stmt 0 view .LVU212
+ 506 005a 4279     		ldrb	r2, [r0, #5]
+ 507 005c 4B79     		ldrb	r3, [r1, #5]
+ 508 005e 5340     		eors	r3, r2
+ 509 0060 4B71     		strb	r3, [r1, #5]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 510              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU213
+ 511              	.LVL23:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 512              		.loc 1 114 13 discriminator 1 view .LVU214
+ 115:AES_128.c     **** }
+ 513              		.loc 1 115 4 view .LVU215
+ 115:AES_128.c     **** }
+ 514              		.loc 1 115 21 is_stmt 0 view .LVU216
+ 515 0062 8279     		ldrb	r2, [r0, #6]
+ 516 0064 8B79     		ldrb	r3, [r1, #6]
+ 517 0066 5340     		eors	r3, r2
+ 518 0068 8B71     		strb	r3, [r1, #6]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 519              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU217
+ 520              	.LVL24:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 521              		.loc 1 114 13 discriminator 1 view .LVU218
+ 115:AES_128.c     **** }
+ 522              		.loc 1 115 4 view .LVU219
+ 115:AES_128.c     **** }
+ 523              		.loc 1 115 21 is_stmt 0 view .LVU220
+ 524 006a C279     		ldrb	r2, [r0, #7]
+ 525 006c CB79     		ldrb	r3, [r1, #7]
+ 526 006e 5340     		eors	r3, r2
+ 527 0070 CB71     		strb	r3, [r1, #7]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 528              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU221
+ 529              	.LVL25:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 530              		.loc 1 114 13 discriminator 1 view .LVU222
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 531              		.loc 1 113 17 discriminator 2 view .LVU223
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 532              		.loc 1 113 12 discriminator 1 view .LVU224
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 533              		.loc 1 114 13 discriminator 1 view .LVU225
+ 115:AES_128.c     **** }
+ 534              		.loc 1 115 4 view .LVU226
+ 115:AES_128.c     **** }
+ 535              		.loc 1 115 21 is_stmt 0 view .LVU227
+ 536 0072 027A     		ldrb	r2, [r0, #8]
+ 537 0074 0B7A     		ldrb	r3, [r1, #8]
+ 538 0076 5340     		eors	r3, r2
+ 539 0078 0B72     		strb	r3, [r1, #8]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 540              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU228
+ 541              	.LVL26:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 542              		.loc 1 114 13 discriminator 1 view .LVU229
+ 115:AES_128.c     **** }
+ 543              		.loc 1 115 4 view .LVU230
+ 115:AES_128.c     **** }
+ 544              		.loc 1 115 21 is_stmt 0 view .LVU231
+ 545 007a 427A     		ldrb	r2, [r0, #9]
+ 546 007c 4B7A     		ldrb	r3, [r1, #9]
+ 547 007e 5340     		eors	r3, r2
+ 548 0080 4B72     		strb	r3, [r1, #9]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 549              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU232
+ 550              	.LVL27:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 551              		.loc 1 114 13 discriminator 1 view .LVU233
+ 115:AES_128.c     **** }
+ 552              		.loc 1 115 4 view .LVU234
+ 115:AES_128.c     **** }
+ 553              		.loc 1 115 21 is_stmt 0 view .LVU235
+ 554 0082 827A     		ldrb	r2, [r0, #10]
+ 555 0084 8B7A     		ldrb	r3, [r1, #10]
+ 556 0086 5340     		eors	r3, r2
+ 557 0088 8B72     		strb	r3, [r1, #10]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 558              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU236
+ 559              	.LVL28:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 560              		.loc 1 114 13 discriminator 1 view .LVU237
+ 115:AES_128.c     **** }
+ 561              		.loc 1 115 4 view .LVU238
+ 115:AES_128.c     **** }
+ 562              		.loc 1 115 21 is_stmt 0 view .LVU239
+ 563 008a C27A     		ldrb	r2, [r0, #11]
+ 564 008c CB7A     		ldrb	r3, [r1, #11]
+ 565 008e 5340     		eors	r3, r2
+ 566 0090 CB72     		strb	r3, [r1, #11]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 567              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU240
+ 568              	.LVL29:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 569              		.loc 1 114 13 discriminator 1 view .LVU241
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 570              		.loc 1 113 17 discriminator 2 view .LVU242
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 571              		.loc 1 113 12 discriminator 1 view .LVU243
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 572              		.loc 1 114 13 discriminator 1 view .LVU244
+ 115:AES_128.c     **** }
+ 573              		.loc 1 115 4 view .LVU245
+ 115:AES_128.c     **** }
+ 574              		.loc 1 115 21 is_stmt 0 view .LVU246
+ 575 0092 027B     		ldrb	r2, [r0, #12]
+ 576 0094 0B7B     		ldrb	r3, [r1, #12]
+ 577 0096 5340     		eors	r3, r2
+ 578 0098 0B73     		strb	r3, [r1, #12]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 579              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU247
+ 580              	.LVL30:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 581              		.loc 1 114 13 discriminator 1 view .LVU248
+ 115:AES_128.c     **** }
+ 582              		.loc 1 115 4 view .LVU249
+ 115:AES_128.c     **** }
+ 583              		.loc 1 115 21 is_stmt 0 view .LVU250
+ 584 009a 427B     		ldrb	r2, [r0, #13]
+ 585 009c 4B7B     		ldrb	r3, [r1, #13]
+ 586 009e 5340     		eors	r3, r2
+ 587 00a0 4B73     		strb	r3, [r1, #13]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 588              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU251
+ 589              	.LVL31:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 590              		.loc 1 114 13 discriminator 1 view .LVU252
+ 115:AES_128.c     **** }
+ 591              		.loc 1 115 4 view .LVU253
+ 115:AES_128.c     **** }
+ 592              		.loc 1 115 21 is_stmt 0 view .LVU254
+ 593 00a2 827B     		ldrb	r2, [r0, #14]
+ 594 00a4 8B7B     		ldrb	r3, [r1, #14]
+ 595 00a6 5340     		eors	r3, r2
+ 596 00a8 8B73     		strb	r3, [r1, #14]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 597              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU255
+ 598              	.LVL32:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 599              		.loc 1 114 13 discriminator 1 view .LVU256
+ 115:AES_128.c     **** }
+ 600              		.loc 1 115 4 view .LVU257
+ 115:AES_128.c     **** }
+ 601              		.loc 1 115 21 is_stmt 0 view .LVU258
+ 602 00aa C27B     		ldrb	r2, [r0, #15]
+ 603 00ac CB7B     		ldrb	r3, [r1, #15]
+ 604 00ae 5340     		eors	r3, r2
+ 605 00b0 CB73     		strb	r3, [r1, #15]
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 606              		.loc 1 114 18 is_stmt 1 discriminator 3 view .LVU259
+ 607              	.LVL33:
+ 114:AES_128.c     **** 			StateArray[i][j] ^= Key[i][j];
+ 608              		.loc 1 114 13 discriminator 1 view .LVU260
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 609              		.loc 1 113 17 discriminator 2 view .LVU261
+ 113:AES_128.c     **** 		for(j=0; j<4; j++)
+ 610              		.loc 1 113 12 discriminator 1 view .LVU262
+ 611              		.loc 1 116 1 is_stmt 0 view .LVU263
+ 612 00b2 BDE7     		b	.L7
+ 613              		.cfi_endproc
+ 614              	.LFE4:
+ 616              		.section	.text.AddMatrices,"ax",%progbits
+ 617              		.align	1
+ 618              		.p2align 2,,3
+ 619              		.global	AddMatrices
+ 620              		.syntax unified
+ 621              		.code	16
+ 622              		.thumb_func
+ 624              	AddMatrices:
+ 625              	.LVL34:
+ 626              	.LFB5:
+ 117:AES_128.c     **** 
+ 118:AES_128.c     ****  void AddMatrices( unsigned char (*Mat1)[4], unsigned char (*Mat2)[4], unsigned char(*res)[4]){
+ 627              		.loc 1 118 95 is_stmt 1 view -0
+ 628              		.cfi_startproc
+ 629              		@ args = 0, pretend = 0, frame = 0
+ 630              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119:AES_128.c     **** 	int i,j;
+ 631              		.loc 1 119 2 view .LVU265
+ 120:AES_128.c     **** 	for(i=0; i<4; i++){
+ 632              		.loc 1 120 2 view .LVU266
+ 633              		.loc 1 120 12 discriminator 1 view .LVU267
+ 118:AES_128.c     **** 	int i,j;
+ 634              		.loc 1 118 95 is_stmt 0 view .LVU268
+ 635 0000 30B5     		push	{r4, r5, lr}
+ 636              	.LCFI3:
+ 637              		.cfi_def_cfa_offset 12
+ 638              		.cfi_offset 4, -12
+ 639              		.cfi_offset 5, -8
+ 640              		.cfi_offset 14, -4
+ 641 0002 0624     		movs	r4, #6
+ 642 0004 C31C     		adds	r3, r0, #3
+ 643 0006 CD1C     		adds	r5, r1, #3
+ 644 0008 9B1A     		subs	r3, r3, r2
+ 645 000a AD1A     		subs	r5, r5, r2
+ 646 000c 9C42     		cmp	r4, r3
+ 647 000e 9B41     		sbcs	r3, r3, r3
+ 648 0010 AC42     		cmp	r4, r5
+ 649 0012 A441     		sbcs	r4, r4, r4
+ 650 0014 5B42     		rsbs	r3, r3, #0
+ 651 0016 6442     		rsbs	r4, r4, #0
+ 652 0018 1C42     		tst	r4, r3
+ 653 001a 15D0     		beq	.L18
+ 654 001c 1300     		movs	r3, r2
+ 655 001e 0B43     		orrs	r3, r1
+ 656 0020 0343     		orrs	r3, r0
+ 657 0022 9B07     		lsls	r3, r3, #30
+ 658 0024 10D1     		bne	.L18
+ 659              	.LVL35:
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 660              		.loc 1 121 13 is_stmt 1 discriminator 1 view .LVU269
+ 122:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 661              		.loc 1 122 4 view .LVU270
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 662              		.loc 1 121 18 discriminator 3 view .LVU271
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 663              		.loc 1 121 13 discriminator 1 view .LVU272
+ 664              		.loc 1 122 4 view .LVU273
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 665              		.loc 1 121 18 discriminator 3 view .LVU274
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 666              		.loc 1 121 13 discriminator 1 view .LVU275
+ 667              		.loc 1 122 4 view .LVU276
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 668              		.loc 1 121 18 discriminator 3 view .LVU277
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 669              		.loc 1 121 13 discriminator 1 view .LVU278
+ 670              		.loc 1 122 4 view .LVU279
+ 671              		.loc 1 122 14 is_stmt 0 view .LVU280
+ 672 0026 0C68     		ldr	r4, [r1]
+ 673 0028 0368     		ldr	r3, [r0]
+ 674 002a 6340     		eors	r3, r4
+ 675 002c 1360     		str	r3, [r2]
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 676              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU281
+ 677              	.LVL36:
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 678              		.loc 1 121 13 discriminator 1 view .LVU282
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 679              		.loc 1 120 17 discriminator 2 view .LVU283
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 680              		.loc 1 120 12 discriminator 1 view .LVU284
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 681              		.loc 1 121 13 discriminator 1 view .LVU285
+ 682              		.loc 1 122 4 view .LVU286
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 683              		.loc 1 121 18 discriminator 3 view .LVU287
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 684              		.loc 1 121 13 discriminator 1 view .LVU288
+ 685              		.loc 1 122 4 view .LVU289
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 686              		.loc 1 121 18 discriminator 3 view .LVU290
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 687              		.loc 1 121 13 discriminator 1 view .LVU291
+ 688              		.loc 1 122 4 view .LVU292
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 689              		.loc 1 121 18 discriminator 3 view .LVU293
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 690              		.loc 1 121 13 discriminator 1 view .LVU294
+ 691              		.loc 1 122 4 view .LVU295
+ 692              		.loc 1 122 14 is_stmt 0 view .LVU296
+ 693 002e 4C68     		ldr	r4, [r1, #4]
+ 694 0030 4368     		ldr	r3, [r0, #4]
+ 695 0032 6340     		eors	r3, r4
+ 696 0034 5360     		str	r3, [r2, #4]
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 697              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU297
+ 698              	.LVL37:
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 699              		.loc 1 121 13 discriminator 1 view .LVU298
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 700              		.loc 1 120 17 discriminator 2 view .LVU299
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 701              		.loc 1 120 12 discriminator 1 view .LVU300
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 702              		.loc 1 121 13 discriminator 1 view .LVU301
+ 703              		.loc 1 122 4 view .LVU302
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 704              		.loc 1 121 18 discriminator 3 view .LVU303
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 705              		.loc 1 121 13 discriminator 1 view .LVU304
+ 706              		.loc 1 122 4 view .LVU305
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 707              		.loc 1 121 18 discriminator 3 view .LVU306
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 708              		.loc 1 121 13 discriminator 1 view .LVU307
+ 709              		.loc 1 122 4 view .LVU308
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 710              		.loc 1 121 18 discriminator 3 view .LVU309
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 711              		.loc 1 121 13 discriminator 1 view .LVU310
+ 712              		.loc 1 122 4 view .LVU311
+ 713              		.loc 1 122 14 is_stmt 0 view .LVU312
+ 714 0036 8C68     		ldr	r4, [r1, #8]
+ 715 0038 8368     		ldr	r3, [r0, #8]
+ 716 003a 6340     		eors	r3, r4
+ 717 003c 9360     		str	r3, [r2, #8]
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 718              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU313
+ 719              	.LVL38:
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 720              		.loc 1 121 13 discriminator 1 view .LVU314
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 721              		.loc 1 120 17 discriminator 2 view .LVU315
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 722              		.loc 1 120 12 discriminator 1 view .LVU316
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 723              		.loc 1 121 13 discriminator 1 view .LVU317
+ 724              		.loc 1 122 4 view .LVU318
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 725              		.loc 1 121 18 discriminator 3 view .LVU319
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 726              		.loc 1 121 13 discriminator 1 view .LVU320
+ 727              		.loc 1 122 4 view .LVU321
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 728              		.loc 1 121 18 discriminator 3 view .LVU322
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 729              		.loc 1 121 13 discriminator 1 view .LVU323
+ 730              		.loc 1 122 4 view .LVU324
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 731              		.loc 1 121 18 discriminator 3 view .LVU325
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 732              		.loc 1 121 13 discriminator 1 view .LVU326
+ 733              		.loc 1 122 4 view .LVU327
+ 734              		.loc 1 122 14 is_stmt 0 view .LVU328
+ 735 003e C368     		ldr	r3, [r0, #12]
+ 736 0040 C968     		ldr	r1, [r1, #12]
+ 737              	.LVL39:
+ 738              		.loc 1 122 14 view .LVU329
+ 739 0042 4B40     		eors	r3, r1
+ 740 0044 D360     		str	r3, [r2, #12]
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 741              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU330
+ 742              	.LVL40:
+ 121:AES_128.c     **** 		for(j=0; j<4; j++){
+ 743              		.loc 1 121 13 discriminator 1 view .LVU331
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 744              		.loc 1 120 17 discriminator 2 view .LVU332
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 745              		.loc 1 120 12 discriminator 1 view .LVU333
+ 746              	.L17:
+ 123:AES_128.c     **** 		}
+ 124:AES_128.c     **** 		}
+ 125:AES_128.c     **** }
+ 747              		.loc 1 125 1 is_stmt 0 view .LVU334
+ 748              		@ sp needed
+ 749 0046 30BD     		pop	{r4, r5, pc}
+ 750              	.LVL41:
+ 751              	.L18:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 752              		.loc 1 121 13 is_stmt 1 discriminator 1 view .LVU335
+ 122:AES_128.c     **** 		}
+ 753              		.loc 1 122 4 view .LVU336
+ 122:AES_128.c     **** 		}
+ 754              		.loc 1 122 14 is_stmt 0 view .LVU337
+ 755 0048 0C78     		ldrb	r4, [r1]
+ 756 004a 0378     		ldrb	r3, [r0]
+ 757 004c 6340     		eors	r3, r4
+ 758 004e 1370     		strb	r3, [r2]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 759              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU338
+ 760              	.LVL42:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 761              		.loc 1 121 13 discriminator 1 view .LVU339
+ 122:AES_128.c     **** 		}
+ 762              		.loc 1 122 4 view .LVU340
+ 122:AES_128.c     **** 		}
+ 763              		.loc 1 122 14 is_stmt 0 view .LVU341
+ 764 0050 4C78     		ldrb	r4, [r1, #1]
+ 765 0052 4378     		ldrb	r3, [r0, #1]
+ 766 0054 6340     		eors	r3, r4
+ 767 0056 5370     		strb	r3, [r2, #1]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 768              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU342
+ 769              	.LVL43:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 770              		.loc 1 121 13 discriminator 1 view .LVU343
+ 122:AES_128.c     **** 		}
+ 771              		.loc 1 122 4 view .LVU344
+ 122:AES_128.c     **** 		}
+ 772              		.loc 1 122 14 is_stmt 0 view .LVU345
+ 773 0058 8C78     		ldrb	r4, [r1, #2]
+ 774 005a 8378     		ldrb	r3, [r0, #2]
+ 775 005c 6340     		eors	r3, r4
+ 776 005e 9370     		strb	r3, [r2, #2]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 777              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU346
+ 778              	.LVL44:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 779              		.loc 1 121 13 discriminator 1 view .LVU347
+ 122:AES_128.c     **** 		}
+ 780              		.loc 1 122 4 view .LVU348
+ 122:AES_128.c     **** 		}
+ 781              		.loc 1 122 14 is_stmt 0 view .LVU349
+ 782 0060 CC78     		ldrb	r4, [r1, #3]
+ 783 0062 C378     		ldrb	r3, [r0, #3]
+ 784 0064 6340     		eors	r3, r4
+ 785 0066 D370     		strb	r3, [r2, #3]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 786              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU350
+ 787              	.LVL45:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 788              		.loc 1 121 13 discriminator 1 view .LVU351
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 789              		.loc 1 120 17 discriminator 2 view .LVU352
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 790              		.loc 1 120 12 discriminator 1 view .LVU353
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 791              		.loc 1 121 13 discriminator 1 view .LVU354
+ 122:AES_128.c     **** 		}
+ 792              		.loc 1 122 4 view .LVU355
+ 122:AES_128.c     **** 		}
+ 793              		.loc 1 122 14 is_stmt 0 view .LVU356
+ 794 0068 0C79     		ldrb	r4, [r1, #4]
+ 795 006a 0379     		ldrb	r3, [r0, #4]
+ 796 006c 6340     		eors	r3, r4
+ 797 006e 1371     		strb	r3, [r2, #4]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 798              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU357
+ 799              	.LVL46:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 800              		.loc 1 121 13 discriminator 1 view .LVU358
+ 122:AES_128.c     **** 		}
+ 801              		.loc 1 122 4 view .LVU359
+ 122:AES_128.c     **** 		}
+ 802              		.loc 1 122 14 is_stmt 0 view .LVU360
+ 803 0070 4C79     		ldrb	r4, [r1, #5]
+ 804 0072 4379     		ldrb	r3, [r0, #5]
+ 805 0074 6340     		eors	r3, r4
+ 806 0076 5371     		strb	r3, [r2, #5]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 807              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU361
+ 808              	.LVL47:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 809              		.loc 1 121 13 discriminator 1 view .LVU362
+ 122:AES_128.c     **** 		}
+ 810              		.loc 1 122 4 view .LVU363
+ 122:AES_128.c     **** 		}
+ 811              		.loc 1 122 14 is_stmt 0 view .LVU364
+ 812 0078 8C79     		ldrb	r4, [r1, #6]
+ 813 007a 8379     		ldrb	r3, [r0, #6]
+ 814 007c 6340     		eors	r3, r4
+ 815 007e 9371     		strb	r3, [r2, #6]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 816              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU365
+ 817              	.LVL48:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 818              		.loc 1 121 13 discriminator 1 view .LVU366
+ 122:AES_128.c     **** 		}
+ 819              		.loc 1 122 4 view .LVU367
+ 122:AES_128.c     **** 		}
+ 820              		.loc 1 122 14 is_stmt 0 view .LVU368
+ 821 0080 CC79     		ldrb	r4, [r1, #7]
+ 822 0082 C379     		ldrb	r3, [r0, #7]
+ 823 0084 6340     		eors	r3, r4
+ 824 0086 D371     		strb	r3, [r2, #7]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 825              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU369
+ 826              	.LVL49:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 827              		.loc 1 121 13 discriminator 1 view .LVU370
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 828              		.loc 1 120 17 discriminator 2 view .LVU371
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 829              		.loc 1 120 12 discriminator 1 view .LVU372
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 830              		.loc 1 121 13 discriminator 1 view .LVU373
+ 122:AES_128.c     **** 		}
+ 831              		.loc 1 122 4 view .LVU374
+ 122:AES_128.c     **** 		}
+ 832              		.loc 1 122 14 is_stmt 0 view .LVU375
+ 833 0088 0C7A     		ldrb	r4, [r1, #8]
+ 834 008a 037A     		ldrb	r3, [r0, #8]
+ 835 008c 6340     		eors	r3, r4
+ 836 008e 1372     		strb	r3, [r2, #8]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 837              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU376
+ 838              	.LVL50:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 839              		.loc 1 121 13 discriminator 1 view .LVU377
+ 122:AES_128.c     **** 		}
+ 840              		.loc 1 122 4 view .LVU378
+ 122:AES_128.c     **** 		}
+ 841              		.loc 1 122 14 is_stmt 0 view .LVU379
+ 842 0090 4C7A     		ldrb	r4, [r1, #9]
+ 843 0092 437A     		ldrb	r3, [r0, #9]
+ 844 0094 6340     		eors	r3, r4
+ 845 0096 5372     		strb	r3, [r2, #9]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 846              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU380
+ 847              	.LVL51:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 848              		.loc 1 121 13 discriminator 1 view .LVU381
+ 122:AES_128.c     **** 		}
+ 849              		.loc 1 122 4 view .LVU382
+ 122:AES_128.c     **** 		}
+ 850              		.loc 1 122 14 is_stmt 0 view .LVU383
+ 851 0098 8C7A     		ldrb	r4, [r1, #10]
+ 852 009a 837A     		ldrb	r3, [r0, #10]
+ 853 009c 6340     		eors	r3, r4
+ 854 009e 9372     		strb	r3, [r2, #10]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 855              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU384
+ 856              	.LVL52:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 857              		.loc 1 121 13 discriminator 1 view .LVU385
+ 122:AES_128.c     **** 		}
+ 858              		.loc 1 122 4 view .LVU386
+ 122:AES_128.c     **** 		}
+ 859              		.loc 1 122 14 is_stmt 0 view .LVU387
+ 860 00a0 CC7A     		ldrb	r4, [r1, #11]
+ 861 00a2 C37A     		ldrb	r3, [r0, #11]
+ 862 00a4 6340     		eors	r3, r4
+ 863 00a6 D372     		strb	r3, [r2, #11]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 864              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU388
+ 865              	.LVL53:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 866              		.loc 1 121 13 discriminator 1 view .LVU389
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 867              		.loc 1 120 17 discriminator 2 view .LVU390
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 868              		.loc 1 120 12 discriminator 1 view .LVU391
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 869              		.loc 1 121 13 discriminator 1 view .LVU392
+ 122:AES_128.c     **** 		}
+ 870              		.loc 1 122 4 view .LVU393
+ 122:AES_128.c     **** 		}
+ 871              		.loc 1 122 14 is_stmt 0 view .LVU394
+ 872 00a8 0C7B     		ldrb	r4, [r1, #12]
+ 873 00aa 037B     		ldrb	r3, [r0, #12]
+ 874 00ac 6340     		eors	r3, r4
+ 875 00ae 1373     		strb	r3, [r2, #12]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 876              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU395
+ 877              	.LVL54:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 878              		.loc 1 121 13 discriminator 1 view .LVU396
+ 122:AES_128.c     **** 		}
+ 879              		.loc 1 122 4 view .LVU397
+ 122:AES_128.c     **** 		}
+ 880              		.loc 1 122 14 is_stmt 0 view .LVU398
+ 881 00b0 4C7B     		ldrb	r4, [r1, #13]
+ 882 00b2 437B     		ldrb	r3, [r0, #13]
+ 883 00b4 6340     		eors	r3, r4
+ 884 00b6 5373     		strb	r3, [r2, #13]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 885              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU399
+ 886              	.LVL55:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 887              		.loc 1 121 13 discriminator 1 view .LVU400
+ 122:AES_128.c     **** 		}
+ 888              		.loc 1 122 4 view .LVU401
+ 122:AES_128.c     **** 		}
+ 889              		.loc 1 122 14 is_stmt 0 view .LVU402
+ 890 00b8 8C7B     		ldrb	r4, [r1, #14]
+ 891 00ba 837B     		ldrb	r3, [r0, #14]
+ 892 00bc 6340     		eors	r3, r4
+ 893 00be 9373     		strb	r3, [r2, #14]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 894              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU403
+ 895              	.LVL56:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 896              		.loc 1 121 13 discriminator 1 view .LVU404
+ 122:AES_128.c     **** 		}
+ 897              		.loc 1 122 4 view .LVU405
+ 122:AES_128.c     **** 		}
+ 898              		.loc 1 122 14 is_stmt 0 view .LVU406
+ 899 00c0 C37B     		ldrb	r3, [r0, #15]
+ 900 00c2 C97B     		ldrb	r1, [r1, #15]
+ 901              	.LVL57:
+ 122:AES_128.c     **** 		}
+ 902              		.loc 1 122 14 view .LVU407
+ 903 00c4 4B40     		eors	r3, r1
+ 904 00c6 D373     		strb	r3, [r2, #15]
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 905              		.loc 1 121 18 is_stmt 1 discriminator 3 view .LVU408
+ 906              	.LVL58:
+ 121:AES_128.c     **** 			res[i][j] = Mat1[i][j] ^ Mat2[i][j];
+ 907              		.loc 1 121 13 discriminator 1 view .LVU409
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 908              		.loc 1 120 17 discriminator 2 view .LVU410
+ 120:AES_128.c     **** 		for(j=0; j<4; j++){
+ 909              		.loc 1 120 12 discriminator 1 view .LVU411
+ 910              		.loc 1 125 1 is_stmt 0 view .LVU412
+ 911 00c8 BDE7     		b	.L17
+ 912              		.cfi_endproc
+ 913              	.LFE5:
+ 915 00ca C046     		.section	.text.SubBytes,"ax",%progbits
+ 916              		.align	1
+ 917              		.p2align 2,,3
+ 918              		.global	SubBytes
+ 919              		.syntax unified
+ 920              		.code	16
+ 921              		.thumb_func
+ 923              	SubBytes:
+ 924              	.LVL59:
+ 925              	.LFB6:
+ 126:AES_128.c     **** 
+ 127:AES_128.c     **** void SubBytes (unsigned char StateArray[][4])
+ 128:AES_128.c     **** {
+ 926              		.loc 1 128 1 is_stmt 1 view -0
+ 927              		.cfi_startproc
+ 928              		@ args = 0, pretend = 0, frame = 0
+ 929              		@ frame_needed = 0, uses_anonymous_args = 0
+ 930              		@ link register save eliminated.
+ 129:AES_128.c     **** 	int i,j;
+ 931              		.loc 1 129 2 view .LVU414
+ 130:AES_128.c     **** 	for(i=0; i<4; i++)
+ 932              		.loc 1 130 2 view .LVU415
+ 933              		.loc 1 130 12 discriminator 1 view .LVU416
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 934              		.loc 1 131 13 discriminator 1 view .LVU417
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 935              		.loc 1 132 4 view .LVU418
+ 936              		.loc 1 132 27 is_stmt 0 view .LVU419
+ 937 0000 184B     		ldr	r3, .L28
+ 938              		.loc 1 132 41 view .LVU420
+ 939 0002 0278     		ldrb	r2, [r0]
+ 133:AES_128.c     **** }
+ 940              		.loc 1 133 1 view .LVU421
+ 941              		@ sp needed
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 942              		.loc 1 132 21 view .LVU422
+ 943 0004 9A5C     		ldrb	r2, [r3, r2]
+ 944 0006 0270     		strb	r2, [r0]
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 945              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU423
+ 946              	.LVL60:
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 947              		.loc 1 131 13 discriminator 1 view .LVU424
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 948              		.loc 1 132 4 view .LVU425
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 949              		.loc 1 132 41 is_stmt 0 view .LVU426
+ 950 0008 4278     		ldrb	r2, [r0, #1]
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 951              		.loc 1 132 21 view .LVU427
+ 952 000a 9A5C     		ldrb	r2, [r3, r2]
+ 953 000c 4270     		strb	r2, [r0, #1]
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 954              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU428
+ 955              	.LVL61:
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 956              		.loc 1 131 13 discriminator 1 view .LVU429
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 957              		.loc 1 132 4 view .LVU430
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 958              		.loc 1 132 41 is_stmt 0 view .LVU431
+ 959 000e 8278     		ldrb	r2, [r0, #2]
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 960              		.loc 1 132 21 view .LVU432
+ 961 0010 9A5C     		ldrb	r2, [r3, r2]
+ 962 0012 8270     		strb	r2, [r0, #2]
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 963              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU433
+ 964              	.LVL62:
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 965              		.loc 1 131 13 discriminator 1 view .LVU434
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 966              		.loc 1 132 4 view .LVU435
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 967              		.loc 1 132 41 is_stmt 0 view .LVU436
+ 968 0014 C278     		ldrb	r2, [r0, #3]
+ 132:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 969              		.loc 1 132 21 view .LVU437
+ 970 0016 9A5C     		ldrb	r2, [r3, r2]
+ 971 0018 C270     		strb	r2, [r0, #3]
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 972              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU438
+ 973              	.LVL63:
+ 131:AES_128.c     **** 		for(j=0; j<4; j++)
+ 974              		.loc 1 131 13 discriminator 1 view .LVU439
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 975              		.loc 1 130 17 discriminator 2 view .LVU440
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 976              		.loc 1 130 12 discriminator 1 view .LVU441
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 977              		.loc 1 131 13 discriminator 1 view .LVU442
+ 132:AES_128.c     **** }
+ 978              		.loc 1 132 4 view .LVU443
+ 132:AES_128.c     **** }
+ 979              		.loc 1 132 41 is_stmt 0 view .LVU444
+ 980 001a 0279     		ldrb	r2, [r0, #4]
+ 132:AES_128.c     **** }
+ 981              		.loc 1 132 21 view .LVU445
+ 982 001c 9A5C     		ldrb	r2, [r3, r2]
+ 983 001e 0271     		strb	r2, [r0, #4]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 984              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU446
+ 985              	.LVL64:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 986              		.loc 1 131 13 discriminator 1 view .LVU447
+ 132:AES_128.c     **** }
+ 987              		.loc 1 132 4 view .LVU448
+ 132:AES_128.c     **** }
+ 988              		.loc 1 132 41 is_stmt 0 view .LVU449
+ 989 0020 4279     		ldrb	r2, [r0, #5]
+ 132:AES_128.c     **** }
+ 990              		.loc 1 132 21 view .LVU450
+ 991 0022 9A5C     		ldrb	r2, [r3, r2]
+ 992 0024 4271     		strb	r2, [r0, #5]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 993              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU451
+ 994              	.LVL65:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 995              		.loc 1 131 13 discriminator 1 view .LVU452
+ 132:AES_128.c     **** }
+ 996              		.loc 1 132 4 view .LVU453
+ 132:AES_128.c     **** }
+ 997              		.loc 1 132 41 is_stmt 0 view .LVU454
+ 998 0026 8279     		ldrb	r2, [r0, #6]
+ 132:AES_128.c     **** }
+ 999              		.loc 1 132 21 view .LVU455
+ 1000 0028 9A5C     		ldrb	r2, [r3, r2]
+ 1001 002a 8271     		strb	r2, [r0, #6]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1002              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU456
+ 1003              	.LVL66:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1004              		.loc 1 131 13 discriminator 1 view .LVU457
+ 132:AES_128.c     **** }
+ 1005              		.loc 1 132 4 view .LVU458
+ 132:AES_128.c     **** }
+ 1006              		.loc 1 132 41 is_stmt 0 view .LVU459
+ 1007 002c C279     		ldrb	r2, [r0, #7]
+ 132:AES_128.c     **** }
+ 1008              		.loc 1 132 21 view .LVU460
+ 1009 002e 9A5C     		ldrb	r2, [r3, r2]
+ 1010 0030 C271     		strb	r2, [r0, #7]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1011              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU461
+ 1012              	.LVL67:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1013              		.loc 1 131 13 discriminator 1 view .LVU462
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 1014              		.loc 1 130 17 discriminator 2 view .LVU463
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 1015              		.loc 1 130 12 discriminator 1 view .LVU464
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1016              		.loc 1 131 13 discriminator 1 view .LVU465
+ 132:AES_128.c     **** }
+ 1017              		.loc 1 132 4 view .LVU466
+ 132:AES_128.c     **** }
+ 1018              		.loc 1 132 41 is_stmt 0 view .LVU467
+ 1019 0032 027A     		ldrb	r2, [r0, #8]
+ 132:AES_128.c     **** }
+ 1020              		.loc 1 132 21 view .LVU468
+ 1021 0034 9A5C     		ldrb	r2, [r3, r2]
+ 1022 0036 0272     		strb	r2, [r0, #8]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1023              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU469
+ 1024              	.LVL68:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1025              		.loc 1 131 13 discriminator 1 view .LVU470
+ 132:AES_128.c     **** }
+ 1026              		.loc 1 132 4 view .LVU471
+ 132:AES_128.c     **** }
+ 1027              		.loc 1 132 41 is_stmt 0 view .LVU472
+ 1028 0038 427A     		ldrb	r2, [r0, #9]
+ 132:AES_128.c     **** }
+ 1029              		.loc 1 132 21 view .LVU473
+ 1030 003a 9A5C     		ldrb	r2, [r3, r2]
+ 1031 003c 4272     		strb	r2, [r0, #9]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1032              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU474
+ 1033              	.LVL69:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1034              		.loc 1 131 13 discriminator 1 view .LVU475
+ 132:AES_128.c     **** }
+ 1035              		.loc 1 132 4 view .LVU476
+ 132:AES_128.c     **** }
+ 1036              		.loc 1 132 41 is_stmt 0 view .LVU477
+ 1037 003e 827A     		ldrb	r2, [r0, #10]
+ 132:AES_128.c     **** }
+ 1038              		.loc 1 132 21 view .LVU478
+ 1039 0040 9A5C     		ldrb	r2, [r3, r2]
+ 1040 0042 8272     		strb	r2, [r0, #10]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1041              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU479
+ 1042              	.LVL70:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1043              		.loc 1 131 13 discriminator 1 view .LVU480
+ 132:AES_128.c     **** }
+ 1044              		.loc 1 132 4 view .LVU481
+ 132:AES_128.c     **** }
+ 1045              		.loc 1 132 41 is_stmt 0 view .LVU482
+ 1046 0044 C27A     		ldrb	r2, [r0, #11]
+ 132:AES_128.c     **** }
+ 1047              		.loc 1 132 21 view .LVU483
+ 1048 0046 9A5C     		ldrb	r2, [r3, r2]
+ 1049 0048 C272     		strb	r2, [r0, #11]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1050              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU484
+ 1051              	.LVL71:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1052              		.loc 1 131 13 discriminator 1 view .LVU485
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 1053              		.loc 1 130 17 discriminator 2 view .LVU486
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 1054              		.loc 1 130 12 discriminator 1 view .LVU487
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1055              		.loc 1 131 13 discriminator 1 view .LVU488
+ 132:AES_128.c     **** }
+ 1056              		.loc 1 132 4 view .LVU489
+ 132:AES_128.c     **** }
+ 1057              		.loc 1 132 41 is_stmt 0 view .LVU490
+ 1058 004a 027B     		ldrb	r2, [r0, #12]
+ 132:AES_128.c     **** }
+ 1059              		.loc 1 132 21 view .LVU491
+ 1060 004c 9A5C     		ldrb	r2, [r3, r2]
+ 1061 004e 0273     		strb	r2, [r0, #12]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1062              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU492
+ 1063              	.LVL72:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1064              		.loc 1 131 13 discriminator 1 view .LVU493
+ 132:AES_128.c     **** }
+ 1065              		.loc 1 132 4 view .LVU494
+ 132:AES_128.c     **** }
+ 1066              		.loc 1 132 41 is_stmt 0 view .LVU495
+ 1067 0050 427B     		ldrb	r2, [r0, #13]
+ 132:AES_128.c     **** }
+ 1068              		.loc 1 132 21 view .LVU496
+ 1069 0052 9A5C     		ldrb	r2, [r3, r2]
+ 1070 0054 4273     		strb	r2, [r0, #13]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1071              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU497
+ 1072              	.LVL73:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1073              		.loc 1 131 13 discriminator 1 view .LVU498
+ 132:AES_128.c     **** }
+ 1074              		.loc 1 132 4 view .LVU499
+ 132:AES_128.c     **** }
+ 1075              		.loc 1 132 41 is_stmt 0 view .LVU500
+ 1076 0056 827B     		ldrb	r2, [r0, #14]
+ 132:AES_128.c     **** }
+ 1077              		.loc 1 132 21 view .LVU501
+ 1078 0058 9A5C     		ldrb	r2, [r3, r2]
+ 1079 005a 8273     		strb	r2, [r0, #14]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1080              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU502
+ 1081              	.LVL74:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1082              		.loc 1 131 13 discriminator 1 view .LVU503
+ 132:AES_128.c     **** }
+ 1083              		.loc 1 132 4 view .LVU504
+ 132:AES_128.c     **** }
+ 1084              		.loc 1 132 41 is_stmt 0 view .LVU505
+ 1085 005c C27B     		ldrb	r2, [r0, #15]
+ 132:AES_128.c     **** }
+ 1086              		.loc 1 132 21 view .LVU506
+ 1087 005e 9B5C     		ldrb	r3, [r3, r2]
+ 1088 0060 C373     		strb	r3, [r0, #15]
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1089              		.loc 1 131 18 is_stmt 1 discriminator 3 view .LVU507
+ 1090              	.LVL75:
+ 131:AES_128.c     **** 			StateArray[i][j] = SBox[StateArray[i][j]];
+ 1091              		.loc 1 131 13 discriminator 1 view .LVU508
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 1092              		.loc 1 130 17 discriminator 2 view .LVU509
+ 130:AES_128.c     **** 		for(j=0; j<4; j++)
+ 1093              		.loc 1 130 12 discriminator 1 view .LVU510
+ 1094              		.loc 1 133 1 is_stmt 0 view .LVU511
+ 1095 0062 7047     		bx	lr
+ 1096              	.L29:
+ 1097              		.align	2
+ 1098              	.L28:
+ 1099 0064 00000000 		.word	SBox
+ 1100              		.cfi_endproc
+ 1101              	.LFE6:
+ 1103              		.section	.text.ShiftRows,"ax",%progbits
+ 1104              		.align	1
+ 1105              		.p2align 2,,3
+ 1106              		.global	ShiftRows
+ 1107              		.syntax unified
+ 1108              		.code	16
+ 1109              		.thumb_func
+ 1111              	ShiftRows:
+ 1112              	.LVL76:
+ 1113              	.LFB7:
+ 134:AES_128.c     **** 
+ 135:AES_128.c     **** 
+ 136:AES_128.c     **** void ShiftRows (unsigned char Matrix[][4])
+ 137:AES_128.c     **** {
+ 1114              		.loc 1 137 1 is_stmt 1 view -0
+ 1115              		.cfi_startproc
+ 1116              		@ args = 0, pretend = 0, frame = 0
+ 1117              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1118              		@ link register save eliminated.
+ 138:AES_128.c     **** 	unsigned char x;
+ 1119              		.loc 1 138 2 view .LVU513
+ 139:AES_128.c     **** 	x = Matrix[1][0];
+ 1120              		.loc 1 139 2 view .LVU514
+ 140:AES_128.c     **** 	Matrix[1][0] = Matrix[1][1];
+ 1121              		.loc 1 140 15 is_stmt 0 view .LVU515
+ 1122 0000 4279     		ldrb	r2, [r0, #5]
+ 139:AES_128.c     **** 	x = Matrix[1][0];
+ 1123              		.loc 1 139 4 view .LVU516
+ 1124 0002 0379     		ldrb	r3, [r0, #4]
+ 1125              	.LVL77:
+ 1126              		.loc 1 140 2 is_stmt 1 view .LVU517
+ 1127              		.loc 1 140 15 is_stmt 0 view .LVU518
+ 1128 0004 0271     		strb	r2, [r0, #4]
+ 141:AES_128.c     **** 	Matrix[1][1] = Matrix[1][2];
+ 1129              		.loc 1 141 2 is_stmt 1 view .LVU519
+ 1130              		.loc 1 141 15 is_stmt 0 view .LVU520
+ 1131 0006 8279     		ldrb	r2, [r0, #6]
+ 142:AES_128.c     **** 	Matrix[1][2] = Matrix[1][3];
+ 143:AES_128.c     **** 	Matrix[1][3] = x;
+ 144:AES_128.c     **** 	x = Matrix[2][0];
+ 145:AES_128.c     **** 	Matrix[2][0] = Matrix[2][2];
+ 146:AES_128.c     **** 	Matrix[2][2] = x;
+ 147:AES_128.c     **** 	x = Matrix[2][1];
+ 148:AES_128.c     **** 	Matrix[2][1] = Matrix[2][3];
+ 149:AES_128.c     **** 	Matrix[2][3] = x;
+ 150:AES_128.c     **** 	x = Matrix[3][3];
+ 151:AES_128.c     **** 	Matrix[3][3] = Matrix[3][2];
+ 152:AES_128.c     **** 	Matrix[3][2] = Matrix[3][1];
+ 153:AES_128.c     **** 	Matrix[3][1] = Matrix[3][0];
+ 154:AES_128.c     **** 	Matrix[3][0] = x;
+ 155:AES_128.c     **** }
+ 1132              		.loc 1 155 1 view .LVU521
+ 1133              		@ sp needed
+ 141:AES_128.c     **** 	Matrix[1][1] = Matrix[1][2];
+ 1134              		.loc 1 141 15 view .LVU522
+ 1135 0008 4271     		strb	r2, [r0, #5]
+ 142:AES_128.c     **** 	Matrix[1][2] = Matrix[1][3];
+ 1136              		.loc 1 142 2 is_stmt 1 view .LVU523
+ 142:AES_128.c     **** 	Matrix[1][2] = Matrix[1][3];
+ 1137              		.loc 1 142 15 is_stmt 0 view .LVU524
+ 1138 000a C279     		ldrb	r2, [r0, #7]
+ 143:AES_128.c     **** 	x = Matrix[2][0];
+ 1139              		.loc 1 143 15 view .LVU525
+ 1140 000c C371     		strb	r3, [r0, #7]
+ 142:AES_128.c     **** 	Matrix[1][2] = Matrix[1][3];
+ 1141              		.loc 1 142 15 view .LVU526
+ 1142 000e 8271     		strb	r2, [r0, #6]
+ 143:AES_128.c     **** 	x = Matrix[2][0];
+ 1143              		.loc 1 143 2 is_stmt 1 view .LVU527
+ 144:AES_128.c     **** 	Matrix[2][0] = Matrix[2][2];
+ 1144              		.loc 1 144 2 view .LVU528
+ 145:AES_128.c     **** 	Matrix[2][2] = x;
+ 1145              		.loc 1 145 15 is_stmt 0 view .LVU529
+ 1146 0010 827A     		ldrb	r2, [r0, #10]
+ 144:AES_128.c     **** 	Matrix[2][0] = Matrix[2][2];
+ 1147              		.loc 1 144 4 view .LVU530
+ 1148 0012 037A     		ldrb	r3, [r0, #8]
+ 1149              	.LVL78:
+ 145:AES_128.c     **** 	Matrix[2][2] = x;
+ 1150              		.loc 1 145 2 is_stmt 1 view .LVU531
+ 145:AES_128.c     **** 	Matrix[2][2] = x;
+ 1151              		.loc 1 145 15 is_stmt 0 view .LVU532
+ 1152 0014 0272     		strb	r2, [r0, #8]
+ 146:AES_128.c     **** 	x = Matrix[2][1];
+ 1153              		.loc 1 146 2 is_stmt 1 view .LVU533
+ 148:AES_128.c     **** 	Matrix[2][3] = x;
+ 1154              		.loc 1 148 15 is_stmt 0 view .LVU534
+ 1155 0016 C27A     		ldrb	r2, [r0, #11]
+ 146:AES_128.c     **** 	x = Matrix[2][1];
+ 1156              		.loc 1 146 15 view .LVU535
+ 1157 0018 8372     		strb	r3, [r0, #10]
+ 147:AES_128.c     **** 	Matrix[2][1] = Matrix[2][3];
+ 1158              		.loc 1 147 2 is_stmt 1 view .LVU536
+ 147:AES_128.c     **** 	Matrix[2][1] = Matrix[2][3];
+ 1159              		.loc 1 147 4 is_stmt 0 view .LVU537
+ 1160 001a 437A     		ldrb	r3, [r0, #9]
+ 1161              	.LVL79:
+ 148:AES_128.c     **** 	Matrix[2][3] = x;
+ 1162              		.loc 1 148 2 is_stmt 1 view .LVU538
+ 148:AES_128.c     **** 	Matrix[2][3] = x;
+ 1163              		.loc 1 148 15 is_stmt 0 view .LVU539
+ 1164 001c 4272     		strb	r2, [r0, #9]
+ 149:AES_128.c     **** 	x = Matrix[3][3];
+ 1165              		.loc 1 149 2 is_stmt 1 view .LVU540
+ 151:AES_128.c     **** 	Matrix[3][2] = Matrix[3][1];
+ 1166              		.loc 1 151 15 is_stmt 0 view .LVU541
+ 1167 001e 827B     		ldrb	r2, [r0, #14]
+ 149:AES_128.c     **** 	x = Matrix[3][3];
+ 1168              		.loc 1 149 15 view .LVU542
+ 1169 0020 C372     		strb	r3, [r0, #11]
+ 150:AES_128.c     **** 	Matrix[3][3] = Matrix[3][2];
+ 1170              		.loc 1 150 2 is_stmt 1 view .LVU543
+ 150:AES_128.c     **** 	Matrix[3][3] = Matrix[3][2];
+ 1171              		.loc 1 150 4 is_stmt 0 view .LVU544
+ 1172 0022 C37B     		ldrb	r3, [r0, #15]
+ 1173              	.LVL80:
+ 151:AES_128.c     **** 	Matrix[3][2] = Matrix[3][1];
+ 1174              		.loc 1 151 2 is_stmt 1 view .LVU545
+ 151:AES_128.c     **** 	Matrix[3][2] = Matrix[3][1];
+ 1175              		.loc 1 151 15 is_stmt 0 view .LVU546
+ 1176 0024 C273     		strb	r2, [r0, #15]
+ 152:AES_128.c     **** 	Matrix[3][1] = Matrix[3][0];
+ 1177              		.loc 1 152 2 is_stmt 1 view .LVU547
+ 152:AES_128.c     **** 	Matrix[3][1] = Matrix[3][0];
+ 1178              		.loc 1 152 15 is_stmt 0 view .LVU548
+ 1179 0026 427B     		ldrb	r2, [r0, #13]
+ 1180 0028 8273     		strb	r2, [r0, #14]
+ 153:AES_128.c     **** 	Matrix[3][0] = x;
+ 1181              		.loc 1 153 2 is_stmt 1 view .LVU549
+ 153:AES_128.c     **** 	Matrix[3][0] = x;
+ 1182              		.loc 1 153 15 is_stmt 0 view .LVU550
+ 1183 002a 027B     		ldrb	r2, [r0, #12]
+ 154:AES_128.c     **** }
+ 1184              		.loc 1 154 15 view .LVU551
+ 1185 002c 0373     		strb	r3, [r0, #12]
+ 153:AES_128.c     **** 	Matrix[3][0] = x;
+ 1186              		.loc 1 153 15 view .LVU552
+ 1187 002e 4273     		strb	r2, [r0, #13]
+ 154:AES_128.c     **** }
+ 1188              		.loc 1 154 2 is_stmt 1 view .LVU553
+ 1189              		.loc 1 155 1 is_stmt 0 view .LVU554
+ 1190 0030 7047     		bx	lr
+ 1191              		.cfi_endproc
+ 1192              	.LFE7:
+ 1194 0032 C046     		.section	.text.MixColumns,"ax",%progbits
+ 1195              		.align	1
+ 1196              		.p2align 2,,3
+ 1197              		.global	MixColumns
+ 1198              		.syntax unified
+ 1199              		.code	16
+ 1200              		.thumb_func
+ 1202              	MixColumns:
+ 1203              	.LVL81:
+ 1204              	.LFB8:
+ 156:AES_128.c     **** 
+ 157:AES_128.c     **** void MixColumns (unsigned char S_Array[][4])
+ 158:AES_128.c     **** {
+ 1205              		.loc 1 158 1 is_stmt 1 view -0
+ 1206              		.cfi_startproc
+ 1207              		@ args = 0, pretend = 0, frame = 96
+ 1208              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159:AES_128.c     **** 
+ 160:AES_128.c     **** 	int i;
+ 1209              		.loc 1 160 2 view .LVU556
+ 161:AES_128.c     **** 	unsigned char StateArrayTmp[4][4];
+ 1210              		.loc 1 161 2 view .LVU557
+ 162:AES_128.c     **** 
+ 163:AES_128.c     **** 	for ( i = 0; i < 4; i ++)
+ 1211              		.loc 1 163 2 view .LVU558
+ 1212              		.loc 1 163 17 discriminator 1 view .LVU559
+ 164:AES_128.c     **** 	{
+ 165:AES_128.c     **** 	StateArrayTmp [0][ i ] = xTime2 [ S_Array [0][ i ]] ^ xTime3 [ S_Array [1][ i ]] ^
+ 1213              		.loc 1 165 2 view .LVU560
+ 158:AES_128.c     **** 
+ 1214              		.loc 1 158 1 is_stmt 0 view .LVU561
+ 1215 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1216              	.LCFI4:
+ 1217              		.cfi_def_cfa_offset 20
+ 1218              		.cfi_offset 4, -20
+ 1219              		.cfi_offset 5, -16
+ 1220              		.cfi_offset 6, -12
+ 1221              		.cfi_offset 7, -8
+ 1222              		.cfi_offset 14, -4
+ 1223 0002 DE46     		mov	lr, fp
+ 1224 0004 5746     		mov	r7, r10
+ 1225 0006 4E46     		mov	r6, r9
+ 1226 0008 4546     		mov	r5, r8
+ 1227 000a E0B5     		push	{r5, r6, r7, lr}
+ 1228              	.LCFI5:
+ 1229              		.cfi_def_cfa_offset 36
+ 1230              		.cfi_offset 8, -36
+ 1231              		.cfi_offset 9, -32
+ 1232              		.cfi_offset 10, -28
+ 1233              		.cfi_offset 11, -24
+ 1234              		.loc 1 165 76 view .LVU562
+ 1235 000c 0379     		ldrb	r3, [r0, #4]
+ 166:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1236              		.loc 1 166 15 view .LVU563
+ 1237 000e 057A     		ldrb	r5, [r0, #8]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1238              		.loc 1 165 76 view .LVU564
+ 1239 0010 9946     		mov	r9, r3
+ 1240              		.loc 1 166 34 view .LVU565
+ 1241 0012 037B     		ldrb	r3, [r0, #12]
+ 167:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 168:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 169:AES_128.c     **** 	StateArrayTmp [2][ i ] = S_Array [0][ i ] ^ S_Array [1][ i ] ^ xTime2 [ S_Array [2][ i
+ 1242              		.loc 1 169 25 view .LVU566
+ 1243 0014 4A46     		mov	r2, r9
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1244              		.loc 1 166 34 view .LVU567
+ 1245 0016 9A46     		mov	r10, r3
+ 167:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1246              		.loc 1 167 2 is_stmt 1 view .LVU568
+ 1247              		.loc 1 169 2 view .LVU569
+ 170:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 171:AES_128.c     **** 	StateArrayTmp [3][ i ] = xTime3 [ S_Array [0][ i ]] ^ S_Array [1][ i ] ^ S_Array [2][
+ 1248              		.loc 1 171 2 view .LVU570
+ 163:AES_128.c     **** 	{
+ 1249              		.loc 1 163 24 discriminator 3 view .LVU571
+ 1250              	.LVL82:
+ 163:AES_128.c     **** 	{
+ 1251              		.loc 1 163 17 discriminator 1 view .LVU572
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1252              		.loc 1 165 2 view .LVU573
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1253              		.loc 1 167 2 view .LVU574
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1254              		.loc 1 169 2 view .LVU575
+ 1255              		.loc 1 171 2 view .LVU576
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1256              		.loc 1 169 25 is_stmt 0 view .LVU577
+ 1257 0018 5446     		mov	r4, r10
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1258              		.loc 1 169 72 view .LVU578
+ 1259 001a 6F4B     		ldr	r3, .L32
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1260              		.loc 1 165 47 view .LVU579
+ 1261 001c 0678     		ldrb	r6, [r0]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1262              		.loc 1 169 25 view .LVU580
+ 1263 001e 595D     		ldrb	r1, [r3, r5]
+ 1264 0020 7240     		eors	r2, r6
+ 1265 0022 5140     		eors	r1, r2
+ 170:AES_128.c     **** 	StateArrayTmp [3][ i ] = xTime3 [ S_Array [0][ i ]] ^ S_Array [1][ i ] ^ S_Array [2][
+ 1266              		.loc 1 170 14 view .LVU581
+ 1267 0024 6D4A     		ldr	r2, .L32+4
+ 158:AES_128.c     **** 
+ 1268              		.loc 1 158 1 view .LVU582
+ 1269 0026 99B0     		sub	sp, sp, #100
+ 1270              	.LCFI6:
+ 1271              		.cfi_def_cfa_offset 136
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1272              		.loc 1 169 25 view .LVU583
+ 1273 0028 145D     		ldrb	r4, [r2, r4]
+ 1274 002a 1091     		str	r1, [sp, #64]
+ 1275 002c 1194     		str	r4, [sp, #68]
+ 1276              		.loc 1 171 25 view .LVU584
+ 1277 002e 0996     		str	r6, [sp, #36]
+ 1278 0030 915D     		ldrb	r1, [r2, r6]
+ 1279 0032 4C46     		mov	r4, r9
+ 1280 0034 5646     		mov	r6, r10
+ 1281 0036 6C40     		eors	r4, r5
+ 1282 0038 9E5D     		ldrb	r6, [r3, r6]
+ 1283 003a 4C40     		eors	r4, r1
+ 1284 003c 1294     		str	r4, [sp, #72]
+ 1285 003e 1396     		str	r6, [sp, #76]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1286              		.loc 1 165 47 view .LVU585
+ 1287 0040 4678     		ldrb	r6, [r0, #1]
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1288              		.loc 1 166 34 view .LVU586
+ 1289 0042 417B     		ldrb	r1, [r0, #13]
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1290              		.loc 1 166 15 view .LVU587
+ 1291 0044 477A     		ldrb	r7, [r0, #9]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1292              		.loc 1 165 76 view .LVU588
+ 1293 0046 4479     		ldrb	r4, [r0, #5]
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1294              		.loc 1 166 34 view .LVU589
+ 1295 0048 0491     		str	r1, [sp, #16]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1296              		.loc 1 169 25 view .LVU590
+ 1297 004a 3100     		movs	r1, r6
+ 1298 004c 0594     		str	r4, [sp, #20]
+ 1299 004e 6140     		eors	r1, r4
+ 1300 0050 DC5D     		ldrb	r4, [r3, r7]
+ 1301              		.loc 1 171 25 view .LVU591
+ 1302 0052 0896     		str	r6, [sp, #32]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1303              		.loc 1 169 25 view .LVU592
+ 1304 0054 6140     		eors	r1, r4
+ 1305 0056 049C     		ldr	r4, [sp, #16]
+ 1306              		.loc 1 171 25 view .LVU593
+ 1307 0058 0797     		str	r7, [sp, #28]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1308              		.loc 1 169 25 view .LVU594
+ 1309 005a 145D     		ldrb	r4, [r2, r4]
+ 1310 005c 6140     		eors	r1, r4
+ 1311              		.loc 1 171 25 view .LVU595
+ 1312 005e 059C     		ldr	r4, [sp, #20]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1313              		.loc 1 169 25 view .LVU596
+ 1314 0060 0B91     		str	r1, [sp, #44]
+ 1315              		.loc 1 171 25 view .LVU597
+ 1316 0062 915D     		ldrb	r1, [r2, r6]
+ 1317 0064 049E     		ldr	r6, [sp, #16]
+ 1318 0066 7C40     		eors	r4, r7
+ 1319 0068 6140     		eors	r1, r4
+ 1320 006a 9C5D     		ldrb	r4, [r3, r6]
+ 163:AES_128.c     **** 	{
+ 1321              		.loc 1 163 24 is_stmt 1 discriminator 3 view .LVU598
+ 1322              	.LVL83:
+ 163:AES_128.c     **** 	{
+ 1323              		.loc 1 163 17 discriminator 1 view .LVU599
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1324              		.loc 1 165 2 view .LVU600
+ 1325              		.loc 1 171 25 is_stmt 0 view .LVU601
+ 1326 006c 6140     		eors	r1, r4
+ 1327 006e 0D91     		str	r1, [sp, #52]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1328              		.loc 1 165 47 view .LVU602
+ 1329 0070 8178     		ldrb	r1, [r0, #2]
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1330              		.loc 1 166 34 view .LVU603
+ 1331 0072 867B     		ldrb	r6, [r0, #14]
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1332              		.loc 1 167 2 is_stmt 1 view .LVU604
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1333              		.loc 1 169 2 view .LVU605
+ 1334              		.loc 1 171 2 view .LVU606
+ 163:AES_128.c     **** 	{
+ 1335              		.loc 1 163 24 discriminator 3 view .LVU607
+ 1336              	.LVL84:
+ 163:AES_128.c     **** 	{
+ 1337              		.loc 1 163 17 discriminator 1 view .LVU608
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1338              		.loc 1 165 2 view .LVU609
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1339              		.loc 1 167 2 view .LVU610
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1340              		.loc 1 165 47 is_stmt 0 view .LVU611
+ 1341 0074 8846     		mov	r8, r1
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1342              		.loc 1 165 76 view .LVU612
+ 1343 0076 8179     		ldrb	r1, [r0, #6]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1344              		.loc 1 169 25 view .LVU613
+ 1345 0078 4446     		mov	r4, r8
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1346              		.loc 1 165 76 view .LVU614
+ 1347 007a 8C46     		mov	ip, r1
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1348              		.loc 1 169 25 view .LVU615
+ 1349 007c 6746     		mov	r7, ip
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1350              		.loc 1 166 15 view .LVU616
+ 1351 007e 817A     		ldrb	r1, [r0, #10]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1352              		.loc 1 169 25 view .LVU617
+ 1353 0080 7C40     		eors	r4, r7
+ 1354 0082 0F00     		movs	r7, r1
+ 1355 0084 595C     		ldrb	r1, [r3, r1]
+ 1356              		.loc 1 171 25 view .LVU618
+ 1357 0086 0A97     		str	r7, [sp, #40]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1358              		.loc 1 169 25 view .LVU619
+ 1359 0088 6140     		eors	r1, r4
+ 1360 008a 945D     		ldrb	r4, [r2, r6]
+ 1361 008c 6140     		eors	r1, r4
+ 1362              		.loc 1 171 25 view .LVU620
+ 1363 008e 6446     		mov	r4, ip
+ 1364 0090 7C40     		eors	r4, r7
+ 1365 0092 4746     		mov	r7, r8
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1366              		.loc 1 169 25 view .LVU621
+ 1367 0094 0E91     		str	r1, [sp, #56]
+ 1368              		.loc 1 171 25 view .LVU622
+ 1369 0096 2100     		movs	r1, r4
+ 1370 0098 D45D     		ldrb	r4, [r2, r7]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1371              		.loc 1 165 25 view .LVU623
+ 1372 009a 5746     		mov	r7, r10
+ 1373              		.loc 1 171 25 view .LVU624
+ 1374 009c 6140     		eors	r1, r4
+ 1375 009e 9C5D     		ldrb	r4, [r3, r6]
+ 1376 00a0 6140     		eors	r1, r4
+ 1377 00a2 0F91     		str	r1, [sp, #60]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1378              		.loc 1 165 47 view .LVU625
+ 1379 00a4 C178     		ldrb	r1, [r0, #3]
+ 1380 00a6 0191     		str	r1, [sp, #4]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1381              		.loc 1 165 76 view .LVU626
+ 1382 00a8 C479     		ldrb	r4, [r0, #7]
+ 1383 00aa 0694     		str	r4, [sp, #24]
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1384              		.loc 1 166 15 view .LVU627
+ 1385 00ac C17A     		ldrb	r1, [r0, #11]
+ 1386 00ae 0291     		str	r1, [sp, #8]
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1387              		.loc 1 166 34 view .LVU628
+ 1388 00b0 C17B     		ldrb	r1, [r0, #15]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1389              		.loc 1 165 25 view .LVU629
+ 1390 00b2 0C95     		str	r5, [sp, #48]
+ 166:AES_128.c     **** 	StateArrayTmp [1][ i ] = S_Array [0][ i ] ^ xTime2 [ S_Array [1][ i ]] ^ xTime3 [
+ 1391              		.loc 1 166 34 view .LVU630
+ 1392 00b4 0391     		str	r1, [sp, #12]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1393              		.loc 1 165 25 view .LVU631
+ 1394 00b6 2900     		movs	r1, r5
+ 1395 00b8 7940     		eors	r1, r7
+ 1396 00ba 099F     		ldr	r7, [sp, #36]
+ 1397 00bc DC5D     		ldrb	r4, [r3, r7]
+ 1398 00be 4F46     		mov	r7, r9
+ 1399 00c0 6140     		eors	r1, r4
+ 1400 00c2 D55D     		ldrb	r5, [r2, r7]
+ 1401 00c4 049C     		ldr	r4, [sp, #16]
+ 1402 00c6 079F     		ldr	r7, [sp, #28]
+ 1403 00c8 6940     		eors	r1, r5
+ 1404 00ca 6740     		eors	r7, r4
+ 1405 00cc 089C     		ldr	r4, [sp, #32]
+ 1406 00ce 0A9D     		ldr	r5, [sp, #40]
+ 1407 00d0 1C5D     		ldrb	r4, [r3, r4]
+ 1408 00d2 7540     		eors	r5, r6
+ 1409 00d4 7C40     		eors	r4, r7
+ 1410 00d6 059F     		ldr	r7, [sp, #20]
+ 1411 00d8 D75D     		ldrb	r7, [r2, r7]
+ 1412 00da 7C40     		eors	r4, r7
+ 1413 00dc 4746     		mov	r7, r8
+ 1414 00de DF5D     		ldrb	r7, [r3, r7]
+ 1415 00e0 2402     		lsls	r4, r4, #8
+ 1416 00e2 7D40     		eors	r5, r7
+ 1417 00e4 6746     		mov	r7, ip
+ 1418 00e6 D75D     		ldrb	r7, [r2, r7]
+ 1419 00e8 2143     		orrs	r1, r4
+ 1420 00ea 7D40     		eors	r5, r7
+ 1421 00ec 029C     		ldr	r4, [sp, #8]
+ 1422 00ee 039F     		ldr	r7, [sp, #12]
+ 1423 00f0 2D04     		lsls	r5, r5, #16
+ 1424 00f2 7C40     		eors	r4, r7
+ 1425 00f4 019F     		ldr	r7, [sp, #4]
+ 1426 00f6 2943     		orrs	r1, r5
+ 1427 00f8 DF5D     		ldrb	r7, [r3, r7]
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1428              		.loc 1 167 25 view .LVU632
+ 1429 00fa 0C9D     		ldr	r5, [sp, #48]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1430              		.loc 1 165 25 view .LVU633
+ 1431 00fc 7C40     		eors	r4, r7
+ 1432 00fe 069F     		ldr	r7, [sp, #24]
+ 1433 0100 D75D     		ldrb	r7, [r2, r7]
+ 1434 0102 7C40     		eors	r4, r7
+ 1435 0104 0F00     		movs	r7, r1
+ 1436 0106 2406     		lsls	r4, r4, #24
+ 1437 0108 2743     		orrs	r7, r4
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1438              		.loc 1 167 25 view .LVU634
+ 1439 010a 5446     		mov	r4, r10
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1440              		.loc 1 165 25 view .LVU635
+ 1441 010c BB46     		mov	fp, r7
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1442              		.loc 1 167 25 view .LVU636
+ 1443 010e 099F     		ldr	r7, [sp, #36]
+ 1444 0110 6740     		eors	r7, r4
+ 1445 0112 4C46     		mov	r4, r9
+ 1446 0114 195D     		ldrb	r1, [r3, r4]
+ 1447 0116 545D     		ldrb	r4, [r2, r5]
+ 1448 0118 7940     		eors	r1, r7
+ 1449 011a 049D     		ldr	r5, [sp, #16]
+ 1450 011c 089F     		ldr	r7, [sp, #32]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1451              		.loc 1 165 25 view .LVU637
+ 1452 011e 6140     		eors	r1, r4
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1453              		.loc 1 167 25 view .LVU638
+ 1454 0120 7D40     		eors	r5, r7
+ 1455 0122 059F     		ldr	r7, [sp, #20]
+ 1456 0124 DF5D     		ldrb	r7, [r3, r7]
+ 1457 0126 6F40     		eors	r7, r5
+ 1458 0128 079D     		ldr	r5, [sp, #28]
+ 1459 012a 555D     		ldrb	r5, [r2, r5]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1460              		.loc 1 165 25 view .LVU639
+ 1461 012c 6F40     		eors	r7, r5
+ 1462 012e 3F02     		lsls	r7, r7, #8
+ 1463 0130 3943     		orrs	r1, r7
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1464              		.loc 1 167 25 view .LVU640
+ 1465 0132 4746     		mov	r7, r8
+ 1466 0134 7E40     		eors	r6, r7
+ 1467 0136 6746     		mov	r7, ip
+ 1468 0138 0A9D     		ldr	r5, [sp, #40]
+ 1469 013a DC5D     		ldrb	r4, [r3, r7]
+ 1470 013c 555D     		ldrb	r5, [r2, r5]
+ 1471 013e 7440     		eors	r4, r6
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1472              		.loc 1 165 25 view .LVU641
+ 1473 0140 6C40     		eors	r4, r5
+ 1474 0142 274D     		ldr	r5, .L32+8
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1475              		.loc 1 167 25 view .LVU642
+ 1476 0144 019E     		ldr	r6, [sp, #4]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1477              		.loc 1 165 25 view .LVU643
+ 1478 0146 2940     		ands	r1, r5
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1479              		.loc 1 167 25 view .LVU644
+ 1480 0148 039D     		ldr	r5, [sp, #12]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1481              		.loc 1 165 25 view .LVU645
+ 1482 014a 2404     		lsls	r4, r4, #16
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1483              		.loc 1 167 25 view .LVU646
+ 1484 014c 7540     		eors	r5, r6
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1485              		.loc 1 165 25 view .LVU647
+ 1486 014e 2143     		orrs	r1, r4
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1487              		.loc 1 167 25 view .LVU648
+ 1488 0150 2C00     		movs	r4, r5
+ 1489 0152 069F     		ldr	r7, [sp, #24]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1490              		.loc 1 165 25 view .LVU649
+ 1491 0154 0902     		lsls	r1, r1, #8
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1492              		.loc 1 167 25 view .LVU650
+ 1493 0156 DD5D     		ldrb	r5, [r3, r7]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1494              		.loc 1 165 25 view .LVU651
+ 1495 0158 090A     		lsrs	r1, r1, #8
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1496              		.loc 1 167 25 view .LVU652
+ 1497 015a 6C40     		eors	r4, r5
+ 1498 015c 029D     		ldr	r5, [sp, #8]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1499              		.loc 1 169 25 view .LVU653
+ 1500 015e 7E40     		eors	r6, r7
+ 167:AES_128.c     **** 	        S_Array [2][ i ]] ^ S_Array [3][ i ];
+ 1501              		.loc 1 167 25 view .LVU654
+ 1502 0160 555D     		ldrb	r5, [r2, r5]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1503              		.loc 1 165 25 view .LVU655
+ 1504 0162 6C40     		eors	r4, r5
+ 1505 0164 2406     		lsls	r4, r4, #24
+ 1506 0166 2143     		orrs	r1, r4
+ 1507 0168 5C46     		mov	r4, fp
+ 1508 016a 1591     		str	r1, [sp, #84]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1509              		.loc 1 169 2 is_stmt 1 view .LVU656
+ 1510              		.loc 1 171 2 view .LVU657
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1511              		.loc 1 169 25 is_stmt 0 view .LVU658
+ 1512 016c 0B99     		ldr	r1, [sp, #44]
+ 1513 016e 119D     		ldr	r5, [sp, #68]
+ 165:AES_128.c     **** 			S_Array [2][ i ] ^ S_Array [3][ i ];
+ 1514              		.loc 1 165 25 view .LVU659
+ 1515 0170 1494     		str	r4, [sp, #80]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1516              		.loc 1 169 25 view .LVU660
+ 1517 0172 0C02     		lsls	r4, r1, #8
+ 1518 0174 1099     		ldr	r1, [sp, #64]
+ 1519 0176 6940     		eors	r1, r5
+ 1520 0178 2143     		orrs	r1, r4
+ 1521 017a 0E9D     		ldr	r5, [sp, #56]
+ 1522 017c 029C     		ldr	r4, [sp, #8]
+ 1523 017e 2D04     		lsls	r5, r5, #16
+ 1524 0180 1C5D     		ldrb	r4, [r3, r4]
+ 1525 0182 2943     		orrs	r1, r5
+ 1526 0184 7440     		eors	r4, r6
+ 1527 0186 039E     		ldr	r6, [sp, #12]
+ 1528 0188 0D9D     		ldr	r5, [sp, #52]
+ 1529 018a 965D     		ldrb	r6, [r2, r6]
+ 1530 018c 2D02     		lsls	r5, r5, #8
+ 1531 018e 7440     		eors	r4, r6
+ 1532 0190 2406     		lsls	r4, r4, #24
+ 1533 0192 139E     		ldr	r6, [sp, #76]
+ 1534 0194 2143     		orrs	r1, r4
+ 1535 0196 129C     		ldr	r4, [sp, #72]
+ 1536 0198 1691     		str	r1, [sp, #88]
+ 1537 019a 7440     		eors	r4, r6
+ 1538 019c A446     		mov	ip, r4
+ 1539              		.loc 1 171 25 view .LVU661
+ 1540 019e 029C     		ldr	r4, [sp, #8]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1541              		.loc 1 169 25 view .LVU662
+ 1542 01a0 0F9E     		ldr	r6, [sp, #60]
+ 1543              		.loc 1 171 25 view .LVU663
+ 1544 01a2 6740     		eors	r7, r4
+ 1545 01a4 3C00     		movs	r4, r7
+ 1546 01a6 019F     		ldr	r7, [sp, #4]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1547              		.loc 1 169 25 view .LVU664
+ 1548 01a8 3604     		lsls	r6, r6, #16
+ 1549              		.loc 1 171 25 view .LVU665
+ 1550 01aa D25D     		ldrb	r2, [r2, r7]
+ 172:AES_128.c     **** 	 i ] ^ xTime2 [ S_Array [3][ i ]];
+ 173:AES_128.c     **** 	}
+ 174:AES_128.c     **** 	memcpy(S_Array, StateArrayTmp, 4 * 4 * sizeof(unsigned char));
+ 1551              		.loc 1 174 2 view .LVU666
+ 1552 01ac 14A9     		add	r1, sp, #80
+ 171:AES_128.c     **** 	 i ] ^ xTime2 [ S_Array [3][ i ]];
+ 1553              		.loc 1 171 25 view .LVU667
+ 1554 01ae 6240     		eors	r2, r4
+ 1555 01b0 039C     		ldr	r4, [sp, #12]
+ 1556 01b2 1B5D     		ldrb	r3, [r3, r4]
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1557              		.loc 1 169 25 view .LVU668
+ 1558 01b4 5A40     		eors	r2, r3
+ 1559 01b6 6346     		mov	r3, ip
+ 1560 01b8 2B43     		orrs	r3, r5
+ 1561 01ba 1206     		lsls	r2, r2, #24
+ 1562 01bc 3343     		orrs	r3, r6
+ 1563 01be 1343     		orrs	r3, r2
+ 1564              		.loc 1 174 2 view .LVU669
+ 1565 01c0 1022     		movs	r2, #16
+ 169:AES_128.c     **** 	]] ^ xTime3 [ S_Array [3][ i ]];
+ 1566              		.loc 1 169 25 view .LVU670
+ 1567 01c2 1793     		str	r3, [sp, #92]
+ 163:AES_128.c     **** 	{
+ 1568              		.loc 1 163 24 is_stmt 1 discriminator 3 view .LVU671
+ 1569              	.LVL85:
+ 163:AES_128.c     **** 	{
+ 1570              		.loc 1 163 17 discriminator 1 view .LVU672
+ 1571              		.loc 1 174 2 view .LVU673
+ 1572 01c4 FFF7FEFF 		bl	memcpy
+ 1573              	.LVL86:
+ 175:AES_128.c     **** }
+ 1574              		.loc 1 175 1 is_stmt 0 view .LVU674
+ 1575 01c8 19B0     		add	sp, sp, #100
+ 1576              		@ sp needed
+ 1577 01ca F0BC     		pop	{r4, r5, r6, r7}
+ 1578 01cc BB46     		mov	fp, r7
+ 1579 01ce B246     		mov	r10, r6
+ 1580 01d0 A946     		mov	r9, r5
+ 1581 01d2 A046     		mov	r8, r4
+ 1582 01d4 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1583              	.L33:
+ 1584 01d6 C046     		.align	2
+ 1585              	.L32:
+ 1586 01d8 00000000 		.word	xTime2
+ 1587 01dc 00000000 		.word	xTime3
+ 1588 01e0 FFFF00FF 		.word	-16711681
+ 1589              		.cfi_endproc
+ 1590              	.LFE8:
+ 1592              		.global	RCon
+ 1593              		.global	xTime3
+ 1594              		.global	xTime2
+ 1595              		.global	SBox
+ 1596              		.section	.rodata
+ 1597              		.align	2
+ 1598              		.set	.LANCHOR0,. + 0
+ 1601              	RCon:
+ 1602 0000 01020408 		.ascii	"\001\002\004\010\020 @\200\0336"
+ 1602      10204080 
+ 1602      1B36
+ 1603 000a 0000     		.space	2
+ 1606              	xTime3:
+ 1607 000c 00030605 		.ascii	"\000\003\006\005\014\017\012\011\030\033\036\035\024"
+ 1607      0C0F0A09 
+ 1607      181B1E1D 
+ 1607      14
+ 1608 0019 17121130 		.ascii	"\027\022\0210365<?:9(+.-$'\"!`cfelojix{~}twrqPSVU\\"
+ 1608      3336353C 
+ 1608      3F3A3928 
+ 1608      2B2E2D24 
+ 1608      27222160 
+ 1609 0041 5F5A5948 		.ascii	"_ZYHKNMDGBA\300\303\306\305\314\317\312\311\330\333"
+ 1609      4B4E4D44 
+ 1609      474241C0 
+ 1609      C3C6C5CC 
+ 1609      CFCAC9D8 
+ 1610 0056 DEDDD4D7 		.ascii	"\336\335\324\327\322\321\360\363\366\365\374\377\372"
+ 1610      D2D1F0F3 
+ 1610      F6F5FCFF 
+ 1610      FA
+ 1611 0063 F9E8EBEE 		.ascii	"\371\350\353\356\355\344\347\342\341\240\243\246\245"
+ 1611      EDE4E7E2 
+ 1611      E1A0A3A6 
+ 1611      A5
+ 1612 0070 ACAFAAA9 		.ascii	"\254\257\252\251\270\273\276\275\264\267\262\261\220"
+ 1612      B8BBBEBD 
+ 1612      B4B7B2B1 
+ 1612      90
+ 1613 007d 9396959C 		.ascii	"\223\226\225\234\237\232\231\210\213\216\215\204\207"
+ 1613      9F9A9988 
+ 1613      8B8E8D84 
+ 1613      87
+ 1614 008a 82819B98 		.ascii	"\202\201\233\230\235\236\227\224\221\222\203\200\205"
+ 1614      9D9E9794 
+ 1614      91928380 
+ 1614      85
+ 1615 0097 868F8C89 		.ascii	"\206\217\214\211\212\253\250\255\256\247\244\241\242"
+ 1615      8AABA8AD 
+ 1615      AEA7A4A1 
+ 1615      A2
+ 1616 00a4 B3B0B5B6 		.ascii	"\263\260\265\266\277\274\271\272\373\370\375\376\367"
+ 1616      BFBCB9BA 
+ 1616      FBF8FDFE 
+ 1616      F7
+ 1617 00b1 F4F1F2E3 		.ascii	"\364\361\362\343\340\345\346\357\354\351\352\313\310"
+ 1617      E0E5E6EF 
+ 1617      ECE9EACB 
+ 1617      C8
+ 1618 00be CDCEC7C4 		.ascii	"\315\316\307\304\301\302\323\320\325\326\337\334\331"
+ 1618      C1C2D3D0 
+ 1618      D5D6DFDC 
+ 1618      D9
+ 1619 00cb DA5B585D 		.ascii	"\332[X]^WTQRC@EFOLIJkhmngdabspuv\177|yz;8=>7412# %&"
+ 1619      5E575451 
+ 1619      52434045 
+ 1619      464F4C49 
+ 1619      4A6B686D 
+ 1620 00f8 2F2C292A 		.ascii	"/,)*\013\010\015\016\007\004\001\002\023\020\025\026"
+ 1620      0B080D0E 
+ 1620      07040102 
+ 1620      13101516 
+ 1621 0108 1F1C191A 		.ascii	"\037\034\031\032"
+ 1624              	xTime2:
+ 1625 010c 00020406 		.ascii	"\000\002\004\006\010\012\014\016\020\022\024\026\030"
+ 1625      080A0C0E 
+ 1625      10121416 
+ 1625      18
+ 1626 0119 1A1C1E20 		.ascii	"\032\034\036 \"$&(*,.02468:<>@BDFHJLNPRTVXZ\\^`bdfh"
+ 1626      22242628 
+ 1626      2A2C2E30 
+ 1626      32343638 
+ 1626      3A3C3E40 
+ 1627 0141 6A6C6E70 		.ascii	"jlnprtvxz|~\200\202\204\206\210\212\214\216\220\222"
+ 1627      72747678 
+ 1627      7A7C7E80 
+ 1627      82848688 
+ 1627      8A8C8E90 
+ 1628 0156 9496989A 		.ascii	"\224\226\230\232\234\236\240\242\244\246\250\252\254"
+ 1628      9C9EA0A2 
+ 1628      A4A6A8AA 
+ 1628      AC
+ 1629 0163 AEB0B2B4 		.ascii	"\256\260\262\264\266\270\272\274\276\300\302\304\306"
+ 1629      B6B8BABC 
+ 1629      BEC0C2C4 
+ 1629      C6
+ 1630 0170 C8CACCCE 		.ascii	"\310\312\314\316\320\322\324\326\330\332\334\336\340"
+ 1630      D0D2D4D6 
+ 1630      D8DADCDE 
+ 1630      E0
+ 1631 017d E2E4E6E8 		.ascii	"\342\344\346\350\352\354\356\360\362\364\366\370\372"
+ 1631      EAECEEF0 
+ 1631      F2F4F6F8 
+ 1631      FA
+ 1632 018a FCFE1B19 		.ascii	"\374\376\033\031\037\035\023\021\027\025\013\011\017"
+ 1632      1F1D1311 
+ 1632      17150B09 
+ 1632      0F
+ 1633 0197 0D030107 		.ascii	"\015\003\001\007\005;9?=3175+)/-#!'%[Y_]SQWUKIOMCAG"
+ 1633      053B393F 
+ 1633      3D333137 
+ 1633      352B292F 
+ 1633      2D232127 
+ 1634 01bb 457B797F 		.ascii	"E{y\177}sqwukiomcage\233\231\237\235\223\221\227\225"
+ 1634      7D737177 
+ 1634      756B696F 
+ 1634      6D636167 
+ 1634      659B999F 
+ 1635 01d4 8B898F8D 		.ascii	"\213\211\217\215\203\201\207\205\273\271\277\275\263"
+ 1635      83818785 
+ 1635      BBB9BFBD 
+ 1635      B3
+ 1636 01e1 B1B7B5AB 		.ascii	"\261\267\265\253\251\257\255\243\241\247\245\333\331"
+ 1636      A9AFADA3 
+ 1636      A1A7A5DB 
+ 1636      D9
+ 1637 01ee DFDDD3D1 		.ascii	"\337\335\323\321\327\325\313\311\317\315\303\301\307"
+ 1637      D7D5CBC9 
+ 1637      CFCDC3C1 
+ 1637      C7
+ 1638 01fb C5FBF9FF 		.ascii	"\305\373\371\377\375\363\361\367\365\353\351\357\355"
+ 1638      FDF3F1F7 
+ 1638      F5EBE9EF 
+ 1638      ED
+ 1639 0208 E3E1E7E5 		.ascii	"\343\341\347\345"
+ 1642              	SBox:
+ 1643 020c 637C777B 		.ascii	"c|w{\362ko\3050\001g+\376\327\253v\312\202\311}\372"
+ 1643      F26B6FC5 
+ 1643      3001672B 
+ 1643      FED7AB76 
+ 1643      CA82C97D 
+ 1644 0221 5947F0AD 		.ascii	"YG\360\255\324\242\257\234\244r\300\267\375\223&6?\367"
+ 1644      D4A2AF9C 
+ 1644      A472C0B7 
+ 1644      FD932636 
+ 1644      3FF7
+ 1645 0233 CC34A5E5 		.ascii	"\3144\245\345\361q\3301\025\004\307#\303\030\226\005"
+ 1645      F171D831 
+ 1645      1504C723 
+ 1645      C3189605 
+ 1646 0243 9A071280 		.ascii	"\232\007\022\200\342\353'\262u\011\203,\032\033nZ\240"
+ 1646      E2EB27B2 
+ 1646      7509832C 
+ 1646      1A1B6E5A 
+ 1646      A0
+ 1647 0254 523BD6B3 		.ascii	"R;\326\263)\343/\204S\321\000\355 \374\261[j\313\276"
+ 1647      29E32F84 
+ 1647      53D100ED 
+ 1647      20FCB15B 
+ 1647      6ACBBE
+ 1648 0267 394A4C58 		.ascii	"9JLX\317\320\357\252\373CM3\205E\371\002\177P<\237\250"
+ 1648      CFD0EFAA 
+ 1648      FB434D33 
+ 1648      8545F902 
+ 1648      7F503C9F 
+ 1649 027c 51A3408F 		.ascii	"Q\243@\217\222\2358\365\274\266\332!\020\377\363\322"
+ 1649      929D38F5 
+ 1649      BCB6DA21 
+ 1649      10FFF3D2 
+ 1650 028c CD0C13EC 		.ascii	"\315\014\023\354_\227D\027\304\247~=d]\031s`\201O\334"
+ 1650      5F974417 
+ 1650      C4A77E3D 
+ 1650      645D1973 
+ 1650      60814FDC 
+ 1651 02a0 222A9088 		.ascii	"\"*\220\210F\356\270\024\336^\013\333\3402:\012I\006"
+ 1651      46EEB814 
+ 1651      DE5E0BDB 
+ 1651      E0323A0A 
+ 1651      4906
+ 1652 02b2 245CC2D3 		.ascii	"$\\\302\323\254b\221\225\344y\347\3107m\215\325N\251"
+ 1652      AC629195 
+ 1652      E479E7C8 
+ 1652      376D8DD5 
+ 1652      4EA9
+ 1653 02c4 6C56F4EA 		.ascii	"lV\364\352ez\256\010\272x%.\034\246\264\306\350\335"
+ 1653      657AAE08 
+ 1653      BA78252E 
+ 1653      1CA6B4C6 
+ 1653      E8DD
+ 1654 02d6 741F4BBD 		.ascii	"t\037K\275\213\212p>\265fH\003\366\016a5W\271\206\301"
+ 1654      8B8A703E 
+ 1654      B5664803 
+ 1654      F60E6135 
+ 1654      57B986C1 
+ 1655 02ea 1D9EE1F8 		.ascii	"\035\236\341\370\230\021i\331\216\224\233\036\207\351"
+ 1655      981169D9 
+ 1655      8E949B1E 
+ 1655      87E9
+ 1656 02f8 CE5528DF 		.ascii	"\316U(\337\214\241\211\015\277\346BhA\231-\017\260T"
+ 1656      8CA1890D 
+ 1656      BFE64268 
+ 1656      41992D0F 
+ 1656      B054
+ 1657 030a BB16     		.ascii	"\273\026"
+ 1658              		.text
+ 1659              	.Letext0:
+ 1660              		.file 2 "AES_128.h"
+ 1661              		.file 3 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stddef.h"
+ 1662              		.file 4 "/usr/include/newlib/string.h"
+ 1663              		.file 5 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:00000000 AES_128.c
+     /tmp/ccJ5cFqz.s:19     .text.ExpandKey:00000000 $t
+     /tmp/ccJ5cFqz.s:26     .text.ExpandKey:00000000 ExpandKey
+     /tmp/ccJ5cFqz.s:331    .text.ExpandKey:00000130 $d
+     /tmp/ccJ5cFqz.s:1642   .rodata:0000020c SBox
+     /tmp/ccJ5cFqz.s:338    .text.AddRoundKey:00000000 $t
+     /tmp/ccJ5cFqz.s:345    .text.AddRoundKey:00000000 AddRoundKey
+     /tmp/ccJ5cFqz.s:617    .text.AddMatrices:00000000 $t
+     /tmp/ccJ5cFqz.s:624    .text.AddMatrices:00000000 AddMatrices
+     /tmp/ccJ5cFqz.s:916    .text.SubBytes:00000000 $t
+     /tmp/ccJ5cFqz.s:923    .text.SubBytes:00000000 SubBytes
+     /tmp/ccJ5cFqz.s:1099   .text.SubBytes:00000064 $d
+     /tmp/ccJ5cFqz.s:1104   .text.ShiftRows:00000000 $t
+     /tmp/ccJ5cFqz.s:1111   .text.ShiftRows:00000000 ShiftRows
+     /tmp/ccJ5cFqz.s:1195   .text.MixColumns:00000000 $t
+     /tmp/ccJ5cFqz.s:1202   .text.MixColumns:00000000 MixColumns
+     /tmp/ccJ5cFqz.s:1586   .text.MixColumns:000001d8 $d
+     /tmp/ccJ5cFqz.s:1624   .rodata:0000010c xTime2
+     /tmp/ccJ5cFqz.s:1606   .rodata:0000000c xTime3
+     /tmp/ccJ5cFqz.s:1601   .rodata:00000000 RCon
+     /tmp/ccJ5cFqz.s:1597   .rodata:00000000 $d
+
+UNDEFINED SYMBOLS
+memcpy
