@@ -1,8 +1,7 @@
-   1              	# 0 ".././hal/stm32f0/stm32f0_startup.S"
-   2              	# 0 "<built-in>"
-   3              	# 0 "<command-line>"
-   4              	# 1 ".././hal/stm32f0/stm32f0_startup.S"
+   1              	# 1 ".././hal/stm32f0/stm32f0_startup.S"
    1              	/**
+   0              	
+   0              	
    2              	  ******************************************************************************
    3              	  * @file      startup_stm32.s
    4              	  * @author    Ac6
