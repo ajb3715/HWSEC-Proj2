@@ -107,17 +107,21 @@ uint8_t get_pt(uint8_t* pt, uint8_t len)
 {
 	/**********************************
 	* Start user-specific code here. */
-	trigger_high();
+	
 
 	if ( key_entered == 1 ){
 
 	memcpy(PlainText, pt, 16);
 
+	trigger_high();
+
 	encrypt();
+
+	trigger_low();
 
 	pt = (uint8_t*)StateArray;
 
-	trigger_low();
+	
 
 	simpleserial_put('r', 16, pt);
 

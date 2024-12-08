@@ -31,23 +31,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  13 .debug_abbrev 00000cc4  00000000  00000000  00024196  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_loc    0000422a  00000000  00000000  00024e5a  2**0
+ 14 .debug_loc    0000426e  00000000  00000000  00024e5a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 000001f0  00000000  00000000  00029084  2**0
+ 15 .debug_aranges 000001f0  00000000  00000000  000290c8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_ranges 00000888  00000000  00000000  00029274  2**0
+ 16 .debug_ranges 00000888  00000000  00000000  000292b8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00003ba8  00000000  00000000  00029afc  2**0
+ 17 .debug_line   00003ba8  00000000  00000000  00029b40  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00000ead  00000000  00000000  0002d6a4  2**0
+ 18 .debug_str    00000ead  00000000  00000000  0002d6e8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      0000004d  00000000  00000000  0002e551  2**0
+ 19 .comment      0000004d  00000000  00000000  0002e595  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00001204  00000000  00000000  0002e5a0  2**2
+ 20 .debug_frame  00001204  00000000  00000000  0002e5e4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .stab         0000021c  00000000  00000000  0002f7a4  2**2
+ 21 .stab         0000021c  00000000  00000000  0002f7e8  2**2
                   CONTENTS, READONLY, DEBUGGING
- 22 .stabstr      00000245  00000000  00000000  0002f9c0  2**0
+ 22 .stabstr      00000245  00000000  00000000  0002fa04  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -529,11 +529,11 @@ uint8_t aes(uint8_t cmd, uint8_t scmd, uint8_t len, uint8_t *buf)
 
     if (scmd & 0x02) {
  80004c4:	420b      	tst	r3, r1
- 80004c6:	d02e      	beq.n	8000526 <aes+0x76>
+ 80004c6:	d02c      	beq.n	8000522 <aes+0x72>
         req_len += 16;
         if (req_len > len) {
  80004c8:	2d0f      	cmp	r5, #15
- 80004ca:	d934      	bls.n	8000536 <aes+0x86>
+ 80004ca:	d932      	bls.n	8000532 <aes+0x82>
 	memcpy(Key, k, 16);
  80004cc:	2210      	movs	r2, #16
  80004ce:	0031      	movs	r1, r6
@@ -553,78 +553,78 @@ uint8_t aes(uint8_t cmd, uint8_t scmd, uint8_t len, uint8_t *buf)
  80004de:	3b10      	subs	r3, #16
     if (scmd & 0x01) {
  80004e0:	4227      	tst	r7, r4
- 80004e2:	d019      	beq.n	8000518 <aes+0x68>
+ 80004e2:	d017      	beq.n	8000514 <aes+0x64>
         req_len += 16;
         if (req_len > len) {
  80004e4:	4545      	cmp	r5, r8
- 80004e6:	d326      	bcc.n	8000536 <aes+0x86>
+ 80004e6:	d324      	bcc.n	8000532 <aes+0x82>
             return SS_ERR_LEN;
         }
         err = get_pt(buf + req_len - 16, 16);
  80004e8:	18f6      	adds	r6, r6, r3
-	trigger_high();
- 80004ea:	f000 ff13 	bl	8001314 <trigger_high>
 	if ( key_entered == 1 ){
- 80004ee:	2360      	movs	r3, #96	; 0x60
- 80004f0:	4c1b      	ldr	r4, [pc, #108]	; (8000560 <aes+0xb0>)
- 80004f2:	4699      	mov	r9, r3
- 80004f4:	5ce3      	ldrb	r3, [r4, r3]
- 80004f6:	2b01      	cmp	r3, #1
- 80004f8:	d01f      	beq.n	800053a <aes+0x8a>
+ 80004ea:	2360      	movs	r3, #96	; 0x60
+ 80004ec:	4c1c      	ldr	r4, [pc, #112]	; (8000560 <aes+0xb0>)
+ 80004ee:	4699      	mov	r9, r3
+ 80004f0:	5ce3      	ldrb	r3, [r4, r3]
+ 80004f2:	2b01      	cmp	r3, #1
+ 80004f4:	d01f      	beq.n	8000536 <aes+0x86>
 		memcpy(Key, pt, 16);
- 80004fa:	2210      	movs	r2, #16
- 80004fc:	0031      	movs	r1, r6
- 80004fe:	0020      	movs	r0, r4
- 8000500:	f001 fe20 	bl	8002144 <memcpy>
+ 80004f6:	2210      	movs	r2, #16
+ 80004f8:	0031      	movs	r1, r6
+ 80004fa:	0020      	movs	r0, r4
+ 80004fc:	f001 fe22 	bl	8002144 <memcpy>
 		key_entered = 1;
- 8000504:	464b      	mov	r3, r9
- 8000506:	54e7      	strb	r7, [r4, r3]
+ 8000500:	464b      	mov	r3, r9
+ 8000502:	54e7      	strb	r7, [r4, r3]
 		trigger_low();
- 8000508:	f000 ff0c 	bl	8001324 <trigger_low>
+ 8000504:	f000 ff0e 	bl	8001324 <trigger_low>
 		simpleserial_put('r', 16, pt);
- 800050c:	0032      	movs	r2, r6
- 800050e:	2110      	movs	r1, #16
- 8000510:	2072      	movs	r0, #114	; 0x72
- 8000512:	f000 fd71 	bl	8000ff8 <simpleserial_put>
+ 8000508:	0032      	movs	r2, r6
+ 800050a:	2110      	movs	r1, #16
+ 800050c:	2072      	movs	r0, #114	; 0x72
+ 800050e:	f000 fd73 	bl	8000ff8 <simpleserial_put>
 		return 0x00;
- 8000516:	4642      	mov	r2, r8
+ 8000512:	4642      	mov	r2, r8
         if (err)
             return err;
     }
 
     if (len != req_len) {
- 8000518:	42aa      	cmp	r2, r5
- 800051a:	d10c      	bne.n	8000536 <aes+0x86>
+ 8000514:	42aa      	cmp	r2, r5
+ 8000516:	d10c      	bne.n	8000532 <aes+0x82>
         return SS_ERR_LEN;
     }
 
     return 0x00;
- 800051c:	2000      	movs	r0, #0
+ 8000518:	2000      	movs	r0, #0
 
 }
- 800051e:	bcc0      	pop	{r6, r7}
- 8000520:	46b9      	mov	r9, r7
- 8000522:	46b0      	mov	r8, r6
- 8000524:	bdf8      	pop	{r3, r4, r5, r6, r7, pc}
- 8000526:	2310      	movs	r3, #16
+ 800051a:	bcc0      	pop	{r6, r7}
+ 800051c:	46b9      	mov	r9, r7
+ 800051e:	46b0      	mov	r8, r6
+ 8000520:	bdf8      	pop	{r3, r4, r5, r6, r7, pc}
+ 8000522:	2310      	movs	r3, #16
     if (scmd & 0x01) {
- 8000528:	2701      	movs	r7, #1
- 800052a:	4698      	mov	r8, r3
- 800052c:	2300      	movs	r3, #0
- 800052e:	4227      	tst	r7, r4
- 8000530:	d0f2      	beq.n	8000518 <aes+0x68>
+ 8000524:	2701      	movs	r7, #1
+ 8000526:	4698      	mov	r8, r3
+ 8000528:	2300      	movs	r3, #0
+ 800052a:	4227      	tst	r7, r4
+ 800052c:	d0f2      	beq.n	8000514 <aes+0x64>
         if (req_len > len) {
- 8000532:	4545      	cmp	r5, r8
- 8000534:	d2d8      	bcs.n	80004e8 <aes+0x38>
+ 800052e:	4545      	cmp	r5, r8
+ 8000530:	d2da      	bcs.n	80004e8 <aes+0x38>
             return SS_ERR_LEN;
- 8000536:	2004      	movs	r0, #4
- 8000538:	e7f1      	b.n	800051e <aes+0x6e>
+ 8000532:	2004      	movs	r0, #4
+ 8000534:	e7f1      	b.n	800051a <aes+0x6a>
 	memcpy(PlainText, pt, 16);
- 800053a:	0020      	movs	r0, r4
- 800053c:	2210      	movs	r2, #16
- 800053e:	0031      	movs	r1, r6
- 8000540:	3030      	adds	r0, #48	; 0x30
- 8000542:	f001 fdff 	bl	8002144 <memcpy>
+ 8000536:	0020      	movs	r0, r4
+ 8000538:	2210      	movs	r2, #16
+ 800053a:	0031      	movs	r1, r6
+ 800053c:	3030      	adds	r0, #48	; 0x30
+ 800053e:	f001 fe01 	bl	8002144 <memcpy>
+	trigger_high();
+ 8000542:	f000 fee7 	bl	8001314 <trigger_high>
 	encrypt();
  8000546:	f7ff ff07 	bl	8000358 <encrypt>
 	trigger_low();
@@ -636,7 +636,7 @@ uint8_t aes(uint8_t cmd, uint8_t scmd, uint8_t len, uint8_t *buf)
  8000554:	2072      	movs	r0, #114	; 0x72
  8000556:	f000 fd4f 	bl	8000ff8 <simpleserial_put>
  800055a:	4642      	mov	r2, r8
- 800055c:	e7dc      	b.n	8000518 <aes+0x68>
+ 800055c:	e7da      	b.n	8000514 <aes+0x64>
  800055e:	46c0      	nop			; (mov r8, r8)
  8000560:	20000084 	.word	0x20000084
 

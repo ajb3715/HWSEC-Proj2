@@ -1100,12 +1100,12 @@ LOAD c:/users/alexb/chipwh~1/cw/home/portable/armgcc/bin/../lib/gcc/arm-none-eab
  .debug_abbrev  0x000006f2      0x1f3 objdir-CWNANO/stm32f0_hal_nano.o
  .debug_abbrev  0x000008e5      0x3df objdir-CWNANO/stm32f0_hal_lowlevel.o
 
-.debug_loc      0x00000000     0x422a
- .debug_loc     0x00000000      0x4d5 objdir-CWNANO/simpleserial-base.o
- .debug_loc     0x000004d5      0x6c4 objdir-CWNANO/AES_128.o
- .debug_loc     0x00000b99     0x1b25 objdir-CWNANO/simpleserial.o
- .debug_loc     0x000026be      0x1da objdir-CWNANO/stm32f0_hal_nano.o
- .debug_loc     0x00002898     0x1992 objdir-CWNANO/stm32f0_hal_lowlevel.o
+.debug_loc      0x00000000     0x426e
+ .debug_loc     0x00000000      0x519 objdir-CWNANO/simpleserial-base.o
+ .debug_loc     0x00000519      0x6c4 objdir-CWNANO/AES_128.o
+ .debug_loc     0x00000bdd     0x1b25 objdir-CWNANO/simpleserial.o
+ .debug_loc     0x00002702      0x1da objdir-CWNANO/stm32f0_hal_nano.o
+ .debug_loc     0x000028dc     0x1992 objdir-CWNANO/stm32f0_hal_lowlevel.o
 
 .debug_aranges  0x00000000      0x1f0
  .debug_aranges
