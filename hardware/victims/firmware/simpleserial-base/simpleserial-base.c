@@ -117,7 +117,7 @@ uint8_t get_pt(uint8_t* pt, uint8_t len)
 
 	encrypt();
 
-	trigger_low();
+	trigger_low();	
 
 	pt = (uint8_t*)StateArray;
 
