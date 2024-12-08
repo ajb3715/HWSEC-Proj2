@@ -1174,34 +1174,34 @@
  867              		.file 9 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 simpleserial-base.c
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:16     .text.get_key:00000000 $t
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:25     .text.get_key:00000000 get_key
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:59     .text.get_key:00000010 $d
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:64     .text.encrypt:00000000 $t
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:72     .text.encrypt:00000000 encrypt
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:349    .text.encrypt:0000014c $d
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:856    .bss:00000064 ExpandedKey
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:356    .text.aes:00000000 $t
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:364    .text.aes:00000000 aes
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:570    .text.aes:000000b0 $d
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:579    .text.get_pt:00000000 $t
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:587    .text.get_pt:00000000 get_pt
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:676    .text.get_pt:00000054 $d
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:683    .text.reset:00000000 $t
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:691    .text.reset:00000000 reset
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:710    .text.startup.main:00000000 $t
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:718    .text.startup.main:00000000 main
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:760    .text.startup.main:00000024 $d
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:765    .text.Cat:00000000 $t
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:773    .text.Cat:00000000 Cat
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:839    .bss:00000030 PlainText
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:827    .bss:00000000 Key
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:851    .bss:00000060 key_entered
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:847    .bss:00000050 S_Matrix
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:831    .bss:00000010 Mask_Matrix
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:835    .bss:00000020 ST_Matrix
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:843    .bss:00000040 StateArray
-C:\Users\alexb\AppData\Local\Temp\ccfmuega.s:823    .bss:00000000 $d
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:16     .text.get_key:00000000 $t
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:25     .text.get_key:00000000 get_key
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:59     .text.get_key:00000010 $d
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:64     .text.encrypt:00000000 $t
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:72     .text.encrypt:00000000 encrypt
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:349    .text.encrypt:0000014c $d
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:856    .bss:00000064 ExpandedKey
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:356    .text.aes:00000000 $t
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:364    .text.aes:00000000 aes
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:570    .text.aes:000000b0 $d
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:579    .text.get_pt:00000000 $t
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:587    .text.get_pt:00000000 get_pt
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:676    .text.get_pt:00000054 $d
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:683    .text.reset:00000000 $t
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:691    .text.reset:00000000 reset
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:710    .text.startup.main:00000000 $t
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:718    .text.startup.main:00000000 main
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:760    .text.startup.main:00000024 $d
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:765    .text.Cat:00000000 $t
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:773    .text.Cat:00000000 Cat
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:839    .bss:00000030 PlainText
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:827    .bss:00000000 Key
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:851    .bss:00000060 key_entered
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:847    .bss:00000050 S_Matrix
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:831    .bss:00000010 Mask_Matrix
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:835    .bss:00000020 ST_Matrix
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:843    .bss:00000040 StateArray
+C:\Users\alexb\AppData\Local\Temp\ccz545yU.s:823    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 memcpy
